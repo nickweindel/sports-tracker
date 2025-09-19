@@ -31,6 +31,7 @@ export default function Home() {
           game.awayTeam.abbrev === inputAwayTeam && game.homeTeam.abbrev === inputHomeTeam
         );
 
+        // TODO: introduce better error handling
         const gameData = filteredGame[0];
         const homeTeamData = gameData.homeTeam;
         const awayTeamData = gameData.awayTeam;
@@ -50,8 +51,21 @@ export default function Home() {
             arena: gameData.venue.default
           }
 
-          // TODO: POST this to our DB so we can display it.å
-          console.log(gameToLoad);
+           // POST this to our DB
+           fetch('/api/games', {
+             method: 'POST',
+             headers: {
+               'Content-Type': 'application/json',
+             },
+             body: JSON.stringify(gameToLoad),
+           })
+           .then(response => response.json())
+           .then(data => {
+             console.log('Game saved successfully:', data);
+           })
+           .catch(error => {
+             console.error('Error saving game:', error);
+           });
         } 
       })
       .catch(error => {
