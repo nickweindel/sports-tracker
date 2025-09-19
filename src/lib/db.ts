@@ -1,6 +1,7 @@
 import { Pool } from 'pg';
 
-import { Game } from "@/types/game"
+import { Game } from "@/types/game";
+import { TeamRecord } from "@/types/team-record";
 
 // Database connection pool
 const pool = new Pool({
@@ -47,6 +48,67 @@ export const db = {
   async getAllGames(): Promise<Game[]> {
     const result = await query('SELECT * FROM nhl_games ORDER BY game_date DESC');
     return result.rows
+  },
+
+  // Get team records
+  async getTeamRecords(): Promise<TeamRecord[]> {
+    const result = await query(`
+      WITH cte_home_record AS(
+        SELECT 
+          home_team AS team, 
+          home_team_logo AS team_logo,
+          CASE 
+            WHEN home_team_score > away_team_score 
+            THEN 1
+            ELSE 0 
+          END AS home_team_wins,
+          CASE 
+            WHEN home_team_score < away_team_score
+            THEN 1 
+            ELSE 0 
+          END AS home_team_losses
+        FROM 
+          nhl_games
+      )
+
+      ,cte_away_record AS(
+        SELECT 
+          away_team AS team,
+          away_team_logo AS team_logo,
+          CASE 
+            WHEN away_team_score > home_team_score
+            THEN 1
+            ELSE 0
+          END AS away_team_wins,
+          CASE 
+            WHEN away_team_score < home_team_score
+            THEN 1 
+            ELSE 0 
+          END AS away_team_losses
+        FROM 
+          nhl_games
+      )
+
+      SELECT
+        COALESCE(home.team, away.team) AS team,
+        COALESCE(home.team_logo, away.team_logo) AS team_logo,
+        SUM(COALESCE(home.home_team_wins, 0)) AS home_wins,
+        SUM(COALESCE(home.home_team_losses, 0)) AS home_losses,
+        SUM(COALESCE(away.away_team_wins, 0)) AS away_wins,
+        SUM(COALESCE(away.away_team_losses, 0)) AS away_losses,
+        SUM(COALESCE(home.home_team_wins, 0) + COALESCE(away.away_team_wins, 0)) AS overall_wins,
+        SUM(COALESCE(home.home_team_losses, 0) + COALESCE(away.away_team_losses, 0)) AS overall_losses
+      FROM 
+        cte_home_record home
+      FULL OUTER JOIN
+        cte_away_record away 
+      ON 
+        home.team = away.team
+      GROUP BY 
+        COALESCE(home.team, away.team),
+        COALESCE(home.team_logo, away.team_logo)
+      `);
+    return result.rows;
   },
 
   // Insert a new game

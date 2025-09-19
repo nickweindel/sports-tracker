@@ -7,11 +7,11 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import { ScoreCard } from "./team-score";
-import { MapPin } from "lucide-react"
+import { MapPin } from "lucide-react";
 
-import { Game } from "@/types/game" 
+import { Game } from "@/types/game";
 
 interface GameCardsProps {
     gamesData: Game[]

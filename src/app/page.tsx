@@ -13,40 +13,62 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { TeamInput } from "@/components/shared/team-input";
+import { TeamRecords } from "@/components/shared/team-records";
 
 import { Game } from "@/types/game";
+import { TeamRecord } from "@/types/team-record";
 
 export default function Home() {
-  const [open, setOpen] = useState(false)
-  const [date, setDate] = useState<Date | undefined>(undefined)
-  const [inputHomeTeam, setHomeTeam] = useState<string>("")
-  const [inputAwayTeam, setAwayTeam] = useState<string>("")
-  const [games, setGames] = useState<Game[]>([])
+  const [open, setOpen] = useState(false);
+  const [date, setDate] = useState<Date | undefined>(undefined);
+  const [inputHomeTeam, setHomeTeam] = useState<string>("");
+  const [inputAwayTeam, setAwayTeam] = useState<string>("");
+  const [games, setGames] = useState<Game[]>([]);
+  const [records, setRecords] = useState<TeamRecord[]>([]);
 
   // Function to fetch all games from the database
   const fetchGames = async () => {
     try {
-      const response = await fetch('/api/games')
-      const data = await response.json()
+      const response = await fetch('/api/games');
+      const data = await response.json();
       if (response.ok) {
-        setGames(data.games)
-        console.log('Games fetched:', data.games)
+        setGames(data.games);
+        console.log('Games fetched:', data.games);
       } else {
-        console.error('Error fetching games:', data.error)
+        console.error('Error fetching games:', data.error);
       }
     } catch (error) {
-      console.error('Error fetching games:', error)
-    } finally {
+      console.error('Error fetching games:', error);
     }
-  }
+  };
 
   // Fetch games on page load
   useEffect(() => {
     fetchGames()
-  }, [])
+  }, []);
+
+  // Function fetch all team records from the database
+  const fetchTeamRecords = async() => {
+    try {
+      const response = await fetch('/api/teams');
+      const data = await response.json();
+      if (response.ok) {
+        setRecords(data.teamRecords);
+        console.log('Records fetched:', data.teamRecords);
+      } else {
+        console.error('Error fetching games:', data.error);
+      } 
+    } catch (error) {
+      console.error('Error fetching games:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTeamRecords()
+  }, []);
 
   const submitGame = () => {
-    const formattedDate = date ? date.toISOString().split('T')[0] : undefined
+    const formattedDate = date ? date.toISOString().split('T')[0] : undefined;
     
     fetch(`/api/nhl?date=${formattedDate}`)
       .then(response => response.json())
@@ -133,7 +155,10 @@ export default function Home() {
         <Button onClick={submitGame} disabled={!date || !inputHomeTeam || !inputAwayTeam}>Submit Game</Button>
       </div>
       <div className="flex flex-col gap-3 w-150">
-        <GameCards gamesData={games}/>
+        <GameCards gamesData={games} />
+      </div>
+      <div className="w-100">
+        <TeamRecords recordsData={records} /> 
       </div>
     </div>
   );
