@@ -39,7 +39,11 @@ export function GameCards({gamesData} : GameCardsProps) {
                     </CardHeader>
                      <CardContent className="flex flex-row justify-between items-center">
                          <div className="flex flex-row items-center">
-                             <ScoreCard score={game.away_team_score} logoSrc={game.away_team_logo} logoDimensions={logoDimensions} />
+                             <ScoreCard 
+                                score={game.away_team_score} 
+                                logoSrc={game.away_team_logo} 
+                                logoDimensions={logoDimensions}
+                                logoFirst={true} />
                          </div>
                          <div className="flex flex-row items-center">
                             <MapPin height={iconDimensions} width={iconDimensions} />
@@ -48,7 +52,11 @@ export function GameCards({gamesData} : GameCardsProps) {
                             </div>
                          </div>
                          <div className="flex flex-row items-center">
-                            <ScoreCard score={game.home_team_score} logoSrc={game.home_team_logo} logoDimensions={logoDimensions} />
+                            <ScoreCard 
+                                score={game.home_team_score} 
+                                logoSrc={game.home_team_logo} 
+                                logoDimensions={logoDimensions}
+                                logoFirst={false} />
                          </div>
                      </CardContent>
                      <CardFooter className="font-light text-sm flex justify-center">
