@@ -49,6 +49,8 @@ export default function Home() {
   }, [])
 
   // Calculate distinct counts for KPIs
+  const distinctGames = games.length;
+
   const distinctTeams = games.length > 0 ? new Set([
     ...games.map(game => game.home_team),
     ...games.map(game => game.away_team)
@@ -135,6 +137,7 @@ export default function Home() {
   return (
     <div className="flex flex-row gap-3 p-3">
       <div className="flex flex-col gap-3 p-3 w-70">
+        <VisitKpi seenAttribute="Games" numberSeen={distinctGames} />
         <VisitKpi seenAttribute="Teams" numberSeen={distinctTeams}/>
         <VisitKpi seenAttribute="Arenas" numberSeen={distinctArenas}/>
         <hr className="my-4 border-gray-300" />
