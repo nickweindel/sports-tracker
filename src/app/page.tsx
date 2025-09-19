@@ -1,25 +1,49 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { Button } from "@/components/ui/button"
-import { ChevronDownIcon } from "lucide-react"
-import { Calendar } from "@/components/ui/calendar"
-import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button";
+import { ChevronDownIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { GameCards } from "@/components/shared/game-card";
+import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { TeamInput } from "@/components/shared/team-input"
+} from "@/components/ui/popover";
+import { TeamInput } from "@/components/shared/team-input";
 
-import { Game } from "@/types/game"
+import { Game } from "@/types/game";
 
 export default function Home() {
   const [open, setOpen] = useState(false)
   const [date, setDate] = useState<Date | undefined>(undefined)
   const [inputHomeTeam, setHomeTeam] = useState<string>("")
   const [inputAwayTeam, setAwayTeam] = useState<string>("")
+  const [games, setGames] = useState<Game[]>([])
+
+  // Function to fetch all games from the database
+  const fetchGames = async () => {
+    try {
+      const response = await fetch('/api/games')
+      const data = await response.json()
+      if (response.ok) {
+        setGames(data.games)
+        console.log('Games fetched:', data.games)
+      } else {
+        console.error('Error fetching games:', data.error)
+      }
+    } catch (error) {
+      console.error('Error fetching games:', error)
+    } finally {
+    }
+  }
+
+  // Fetch games on page load
+  useEffect(() => {
+    fetchGames()
+  }, [])
 
   const submitGame = () => {
     const formattedDate = date ? date.toISOString().split('T')[0] : undefined
@@ -62,6 +86,8 @@ export default function Home() {
            .then(response => response.json())
            .then(data => {
              console.log('Game saved successfully:', data);
+             // Refetch games after successful POST
+             fetchGames();
            })
            .catch(error => {
              console.error('Error saving game:', error);
@@ -74,36 +100,41 @@ export default function Home() {
   }
   
   return (
-    <div className="flex flex-col gap-3 p-3 w-70">
-      <Label htmlFor="date" className="px-1">
-        Game Date
-      </Label>
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            id="date"
-            className="justify-between font-normal"
-          >
-            {date ? date.toISOString().split('T')[0] : "Select date"}
-            <ChevronDownIcon />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-          <Calendar
-            mode="single"
-            selected={date}
-            captionLayout="dropdown"
-            onSelect={(date) => {
-              setDate(date)
-              setOpen(false)
-            }}
-          />
-        </PopoverContent>
-      </Popover>
-      <TeamInput homeOrAway="Home" setTeam={setHomeTeam} />
-      <TeamInput homeOrAway="Away" setTeam={setAwayTeam} />
-      <Button onClick={submitGame} disabled={!date || !inputHomeTeam || !inputAwayTeam}>Submit Game</Button>
+    <div className="flex flex-row gap-3 p-3">
+      <div className="flex flex-col gap-3 p-3 w-70">
+        <Label htmlFor="date" className="px-1">
+          Game Date
+        </Label>
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              id="date"
+              className="justify-between font-normal"
+            >
+              {date ? date.toISOString().split('T')[0] : "Select date"}
+              <ChevronDownIcon />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={date}
+              captionLayout="dropdown"
+              onSelect={(date) => {
+                setDate(date)
+                setOpen(false)
+              }}
+            />
+          </PopoverContent>
+        </Popover>
+        <TeamInput homeOrAway="Home" setTeam={setHomeTeam} />
+        <TeamInput homeOrAway="Away" setTeam={setAwayTeam} />
+        <Button onClick={submitGame} disabled={!date || !inputHomeTeam || !inputAwayTeam}>Submit Game</Button>
+      </div>
+      <div className="flex flex-col gap-3 w-150">
+        <GameCards gamesData={games}/>
+      </div>
     </div>
   );
 }

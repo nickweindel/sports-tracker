@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/app/api/database'
+import { db } from '@/lib/db'
 import { Game } from '@/types/game'
 
 export async function POST(request: NextRequest) {
@@ -15,37 +15,14 @@ export async function POST(request: NextRequest) {
     }
 
     // Insert the game into the database
-    const sql = `
-      INSERT INTO games (
-        game_date, home_team, home_team_name, home_team_score, home_team_logo,
-        away_team, away_team_name, away_team_score, away_team_logo,
-        game_center_link, arena
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `
-
-    const params = [
-      gameData.game_date,
-      gameData.home_team,
-      gameData.home_team_name,
-      gameData.home_team_score,
-      gameData.home_team_logo,
-      gameData.away_team,
-      gameData.away_team_name,
-      gameData.away_team_score,
-      gameData.away_team_logo,
-      gameData.game_center_link,
-      gameData.arena
-    ]
-
     try {
-      const result = db.prepare(sql).run(params)
-      console.log(`Game saved with ID: ${result.lastInsertRowid}`)
+      const savedGame = await db.insertGame(gameData)
+      console.log(`Game saved successfully:`, savedGame)
       
       return NextResponse.json(
         { 
           message: 'Game saved successfully',
-          id: result.lastInsertRowid,
-          game: gameData
+          game: savedGame
         },
         { status: 201 }
       )
@@ -68,9 +45,8 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   try {
-    const stmt = db.prepare('SELECT * FROM games ORDER BY game_date DESC')
-    const rows = stmt.all()
-    return NextResponse.json({ games: rows })
+    const games = await db.getAllGames()
+    return NextResponse.json({ games })
   } catch (error) {
     console.error('Error fetching games:', error)
     return NextResponse.json(
