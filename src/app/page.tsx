@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/popover";
 import { TeamInput } from "@/components/shared/team-input";
 import { TeamRecords } from "@/components/shared/team-records";
+import { SportSelect } from "@/components/shared/sport-select";
 import { VisitKpi } from "@/components/shared/visit-kpi";
 
 import { Arena } from "@/types/arena"
@@ -22,6 +23,7 @@ import { Game } from "@/types/game";
 import { TeamRecord } from "@/types/team-record";
 
 export default function Home() {
+  const [selectedLeague, setSelectedLeague] = useState<string>("nhl");
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [inputHomeTeam, setHomeTeam] = useState<string>("");
@@ -29,6 +31,11 @@ export default function Home() {
   const [games, setGames] = useState<Game[]>([]);
   const [records, setRecords] = useState<TeamRecord[]>([]);
   const [arenas, setArenas] = useState<Arena[]>([]);
+
+  // Function to handle changing the league.
+  const handleLeagueChange = (value: string) => {
+    setSelectedLeague(value)
+  }
 
   // Function to fetch all games from the database
   const fetchGames = async () => {
@@ -123,7 +130,7 @@ export default function Home() {
 
         if (formattedDate && inputHomeTeam && inputAwayTeam) {
           const gameToLoad: Game = {
-            league: "nhl", // TODO: have this be dynamic for the league
+            league: selectedLeague,
             game_date: formattedDate,
             home_team: inputHomeTeam,
             home_team_name: homeTeamData.name.default,
@@ -164,6 +171,8 @@ export default function Home() {
   return (
     <div className="flex flex-row gap-3 p-3">
       <div className="flex flex-col gap-3 p-3 w-70">
+        <SportSelect onChange={handleLeagueChange} />
+        <hr className="my-4 border-gray-300" />
         <VisitKpi seenAttribute="Games" numberSeen={distinctGames} />
         <VisitKpi seenAttribute="Teams" numberSeen={distinctTeams}/>
         <VisitKpi seenAttribute="Arenas" numberSeen={distinctArenas}/>
