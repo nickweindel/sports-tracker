@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/popover";
 import { TeamInput } from "@/components/shared/team-input";
 import { TeamRecords } from "@/components/shared/team-records";
+import { VisitKpi } from "@/components/shared/visit-kpi";
 
 import { Game } from "@/types/game";
 import { TeamRecord } from "@/types/team-record";
@@ -45,7 +46,17 @@ export default function Home() {
   // Fetch games on page load
   useEffect(() => {
     fetchGames()
-  }, []);
+  }, [])
+
+  // Calculate distinct counts for KPIs
+  const distinctTeams = games.length > 0 ? new Set([
+    ...games.map(game => game.home_team),
+    ...games.map(game => game.away_team)
+  ]).size : 0
+
+  const distinctArenas = games.length > 0 ? new Set(
+    games.map(game => game.arena)
+  ).size : 0;
 
   // Function fetch all team records from the database
   const fetchTeamRecords = async() => {
@@ -124,6 +135,9 @@ export default function Home() {
   return (
     <div className="flex flex-row gap-3 p-3">
       <div className="flex flex-col gap-3 p-3 w-70">
+        <VisitKpi seenAttribute="Teams" numberSeen={distinctTeams}/>
+        <VisitKpi seenAttribute="Arenas" numberSeen={distinctArenas}/>
+        <hr className="my-4 border-gray-300" />
         <Label htmlFor="date" className="px-1">
           Game Date
         </Label>
