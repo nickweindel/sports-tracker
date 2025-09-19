@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+import { ArenaVisits } from "@/components/shared/arena-visits";
 import { Button } from "@/components/ui/button";
 import { ChevronDownIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
@@ -16,6 +17,7 @@ import { TeamInput } from "@/components/shared/team-input";
 import { TeamRecords } from "@/components/shared/team-records";
 import { VisitKpi } from "@/components/shared/visit-kpi";
 
+import { Arena } from "@/types/arena"
 import { Game } from "@/types/game";
 import { TeamRecord } from "@/types/team-record";
 
@@ -26,6 +28,7 @@ export default function Home() {
   const [inputAwayTeam, setAwayTeam] = useState<string>("");
   const [games, setGames] = useState<Game[]>([]);
   const [records, setRecords] = useState<TeamRecord[]>([]);
+  const [arenas, setArenas] = useState<Arena[]>([]);
 
   // Function to fetch all games from the database
   const fetchGames = async () => {
@@ -33,8 +36,9 @@ export default function Home() {
       const response = await fetch('/api/games');
       const data = await response.json();
       if (response.ok) {
-        setGames(data.games);
-        console.log('Games fetched:', data.games);
+        const gameData = data.games;
+        setGames(gameData);
+        console.log('Games fetched:', gameData);
       } else {
         console.error('Error fetching games:', data.error);
       }
@@ -60,14 +64,15 @@ export default function Home() {
     games.map(game => game.arena)
   ).size : 0;
 
-  // Function fetch all team records from the database
+  // Function to fetch all team records from the database
   const fetchTeamRecords = async() => {
     try {
       const response = await fetch('/api/teams');
       const data = await response.json();
       if (response.ok) {
-        setRecords(data.teamRecords);
-        console.log('Records fetched:', data.teamRecords);
+        const teamRecordData = data.teamRecords
+        setRecords(teamRecordData);
+        console.log('Records fetched:', teamRecordData);
       } else {
         console.error('Error fetching games:', data.error);
       } 
@@ -78,7 +83,28 @@ export default function Home() {
 
   useEffect(() => {
     fetchTeamRecords()
-  }, []);
+  }, [games]);
+
+  // Function to fetch all arena visits from the database.
+  const fetchArenas = async() => {
+    try {
+      const response = await fetch('/api/arenas');
+      const data = await response.json();
+      if (response.ok) {
+        const arenaData = data.arenas;
+        setArenas(arenaData);
+        console.log('Arenas fetched:', arenaData);
+      } else {
+        console.error('Error fetching arenas:', data.error);
+      }
+    } catch (error) {
+      console.error('Error fetching games:', error);
+    }
+  }
+
+  useEffect(() => {
+    fetchArenas()
+  }, [games]);
 
   const submitGame = () => {
     const formattedDate = date ? date.toISOString().split('T')[0] : undefined;
@@ -97,6 +123,7 @@ export default function Home() {
 
         if (formattedDate && inputHomeTeam && inputAwayTeam) {
           const gameToLoad: Game = {
+            league: "nhl", // TODO: have this be dynamic for the league
             game_date: formattedDate,
             home_team: inputHomeTeam,
             home_team_name: homeTeamData.name.default,
@@ -176,6 +203,9 @@ export default function Home() {
       </div>
       <div className="w-100">
         <TeamRecords recordsData={records} /> 
+      </div>
+      <div className="w-100">
+        <ArenaVisits arenasData={arenas} />
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 export interface TeamRecord {
+    league: string;
     team: string;
     team_logo: string;
     home_team_wins: number;

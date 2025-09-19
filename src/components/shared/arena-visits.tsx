@@ -1,0 +1,47 @@
+
+import { 
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+
+import { Arena } from "@/types/arena";
+
+interface ArenaVisitsProps {
+    arenasData: Arena[] 
+}
+
+export function ArenaVisits({ arenasData } : ArenaVisitsProps) {
+    // Calculate winning percentage and sort teams
+    const sortedArenas = arenasData.sort((a, b) => b.visits - a.visits);
+
+    return (
+        <div className="flex flex-col gap-3">
+            <Card>
+                <CardHeader>
+                    <CardTitle className="text-center">
+                        Arenas Visited
+                    </CardTitle>
+                    <CardContent className="flex items-center justify-between m-2">
+                        <div className="space-y-2 w-full">
+                            {sortedArenas.map((arena) => {
+                                return (
+                                    <Card key={arena.arena}>
+                                        <CardContent className="flex items-center justify-between m-2">
+                                            <div className="font-medium">{arena.arena}</div>
+                                            <div className="font-bold">{arena.visits}</div>
+                                        </CardContent>
+                                    </Card>
+                                )
+                            })}
+                        </div>
+                    </CardContent> 
+                </CardHeader>
+            </Card>
+        </div>
+    )
+}
+

@@ -1,4 +1,5 @@
 export interface Game {
+  league: string;
   game_date: string // YYYY-MM-DD
   home_team: string
   home_team_name: string

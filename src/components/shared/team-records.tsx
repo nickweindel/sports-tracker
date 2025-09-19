@@ -29,7 +29,6 @@ export function TeamRecords({recordsData} : TeamRecordProps) {
     const [recordDimension, setRecordDimension] = useState<string>("overall");
 
     const onSelectChange = (value: string) => {
-        console.log(value);
         setRecordDimension(value);
     }
 

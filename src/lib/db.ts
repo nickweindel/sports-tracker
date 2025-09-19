@@ -1,5 +1,6 @@
 import { Pool } from 'pg';
 
+import { Arena } from "@/types/arena";
 import { Game } from "@/types/game";
 import { TeamRecord } from "@/types/team-record";
 
@@ -46,7 +47,23 @@ export async function closePool(): Promise<void> {
 export const db = {
   // Get all games seen
   async getAllGames(): Promise<Game[]> {
-    const result = await query('SELECT * FROM nhl_games ORDER BY game_date DESC');
+    const result = await query('SELECT * FROM games ORDER BY game_date DESC');
+    return result.rows
+  },
+
+  // Get arenas
+  async getArenas(): Promise<Arena[]> {
+    const result = await query(`
+      SELECT 
+         league,
+         arena,
+         COUNT(*) AS visits
+      FROM 
+         games
+      GROUP BY 
+        league,
+        arena      
+      `)
     return result.rows
   },
 
@@ -55,6 +72,7 @@ export const db = {
     const result = await query(`
       WITH cte_home_record AS(
         SELECT 
+          league AS league,
           home_team AS team, 
           home_team_logo AS team_logo,
           CASE 
@@ -68,11 +86,12 @@ export const db = {
             ELSE 0 
           END AS home_team_losses
         FROM 
-          nhl_games
+          games
       )
 
       ,cte_away_record AS(
         SELECT 
+          league AS league,
           away_team AS team,
           away_team_logo AS team_logo,
           CASE 
@@ -86,10 +105,11 @@ export const db = {
             ELSE 0 
           END AS away_team_losses
         FROM 
-          nhl_games
+          games
       )
 
       SELECT
+        COALESCE(home.league, away.league) AS league,
         COALESCE(home.team, away.team) AS team,
         COALESCE(home.team_logo, away.team_logo) AS team_logo,
         SUM(COALESCE(home.home_team_wins, 0)) AS home_wins,
@@ -104,7 +124,10 @@ export const db = {
         cte_away_record away 
       ON 
         home.team = away.team
+      AND 
+        home.league = away.league 
       GROUP BY 
+        COALESCE(home.league, away.league),
         COALESCE(home.team, away.team),
         COALESCE(home.team_logo, away.team_logo)
       `);
@@ -114,15 +137,16 @@ export const db = {
   // Insert a new game
   async insertGame(game: Game): Promise<Game> {
     const sql = `
-      INSERT INTO nhl_games (
-        game_date, home_team, home_team_name, home_team_score, home_team_logo,
-        away_team, away_team_name, away_team_score, away_team_logo,
-        game_center_link, arena
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+      INSERT INTO games (
+        league, game_date, home_team, home_team_name, home_team_score,
+        home_team_logo, away_team, away_team_name, away_team_score,
+        away_team_logo, game_center_link, arena
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       RETURNING *
     `;
 
     const params = [
+      game.league,
       game.game_date,
       game.home_team,
       game.home_team_name,
