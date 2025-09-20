@@ -15,7 +15,7 @@ interface ArenaVisitsProps {
 }
 
 export function ArenaVisits({ arenasData } : ArenaVisitsProps) {
-    // Calculate winning percentage and sort teams
+    // Calculate arena visits and sort them
     const sortedArenas = arenasData.sort((a, b) => b.visits - a.visits);
 
     return (

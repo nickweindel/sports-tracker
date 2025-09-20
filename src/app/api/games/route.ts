@@ -43,9 +43,19 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const games = await db.getAllGames()
+    const { searchParams } = new URL(request.url);
+    const league = searchParams.get('league');
+
+    if (!league) {
+      return NextResponse.json(
+        { error: 'No league was specified' },
+        { status: 500 }
+      )
+    }
+
+    const games = await db.getAllGames(league)
     return NextResponse.json({ games })
   } catch (error) {
     console.error('Error fetching games:', error)

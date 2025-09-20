@@ -42,7 +42,7 @@ export function TeamRecords({recordsData} : TeamRecordProps) {
         .map(team => {
             const wins = team[`${recordDimension}_wins` as keyof TeamRecord] as number;
             const losses = team[`${recordDimension}_losses` as keyof TeamRecord] as number;
-            const winningPercentage = (wins / (wins + losses)) * 100;
+            const winningPercentage = (Number(wins) / (Number(wins) + Number(losses))) * 10;
             
             return {
                 ...team,
@@ -76,6 +76,9 @@ export function TeamRecords({recordsData} : TeamRecordProps) {
                             const losses = team[`${recordDimension}_losses` as keyof TeamRecord] as number;
                             const winningPercentage = team.winningPercentage;
                             const formattedWinningPercentage = numeral(winningPercentage / 10).format('0.000');
+                            console.log(team);
+                            console.log(wins);
+                            console.log(losses);
                             
                             return (
                                 <Card key={team.team}>
@@ -88,7 +91,7 @@ export function TeamRecords({recordsData} : TeamRecordProps) {
                                             <span className="font-medium">{team.team}</span>
                                         </div>
                                         <div className="flex items-center gap-4 text-sm">
-                                            <span>{wins}W - {losses}L</span>
+                                            <span>{Number(wins)}W - {Number(losses)}L</span>
                                             <span className="font-bold">
                                                 {formattedWinningPercentage}
                                             </span>

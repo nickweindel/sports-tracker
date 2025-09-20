@@ -40,7 +40,7 @@ export default function Home() {
   // Function to fetch all games from the database
   const fetchGames = async () => {
     try {
-      const response = await fetch('/api/games');
+      const response = await fetch(`/api/games?league=${selectedLeague}`);
       const data = await response.json();
       if (response.ok) {
         const gameData = data.games;
@@ -57,7 +57,7 @@ export default function Home() {
   // Fetch games on page load
   useEffect(() => {
     fetchGames()
-  }, [])
+  }, [selectedLeague])
 
   // Calculate distinct counts for KPIs
   const distinctGames = games.length;
@@ -74,7 +74,7 @@ export default function Home() {
   // Function to fetch all team records from the database
   const fetchTeamRecords = async() => {
     try {
-      const response = await fetch('/api/teams');
+      const response = await fetch(`/api/teams?league=${selectedLeague}`);
       const data = await response.json();
       if (response.ok) {
         const teamRecordData = data.teamRecords
@@ -90,12 +90,12 @@ export default function Home() {
 
   useEffect(() => {
     fetchTeamRecords()
-  }, [games]);
+  }, [games, selectedLeague]);
 
   // Function to fetch all arena visits from the database.
   const fetchArenas = async() => {
     try {
-      const response = await fetch('/api/arenas');
+      const response = await fetch(`/api/arenas?league=${selectedLeague}`);
       const data = await response.json();
       if (response.ok) {
         const arenaData = data.arenas;
@@ -111,37 +111,73 @@ export default function Home() {
 
   useEffect(() => {
     fetchArenas()
-  }, [games]);
+  }, [games, selectedLeague]);
 
   const submitGame = () => {
-    const formattedDate = date ? date.toISOString().split('T')[0] : undefined;
+    // TODO: there has to be a better way to abstract this, especially when we continue to add leagues
+    const formattedDate = date ? date.toISOString().split('T')[0] : undefined
+    let apiDate: string | undefined;
+
+    if (date) {
+      if (selectedLeague === 'cfb') {
+        // Format: 20250912
+        apiDate = date.toISOString().split('T')[0].replace(/-/g, '');
+      } else if (selectedLeague === 'nhl') {
+        // Format: 2025-09-12
+        apiDate = date.toISOString().split('T')[0];
+      } else {
+        // Default format if needed
+        apiDate = date.toISOString().split('T')[0];
+      }
+    } else {
+      apiDate = undefined;
+    }
     
-    fetch(`/api/nhl?date=${formattedDate}`)
+    fetch(`/api/${selectedLeague}?date=${apiDate}`)
       .then(response => response.json())
       .then(data => {
-        const filteredGame = data.games.filter((game: any) => 
-          game.awayTeam.abbrev === inputAwayTeam && game.homeTeam.abbrev === inputHomeTeam
-        );
+        let filteredGame;
 
+        if (selectedLeague === "nhl") {
+          filteredGame = data.games.filter((game: any) => 
+            game.awayTeam.abbrev === inputAwayTeam && game.homeTeam.abbrev === inputHomeTeam
+          );
+        } else {
+          filteredGame = data.events.filter((event: any) =>
+            event.shortName.toLowerCase().includes(inputAwayTeam.toLowerCase()) &&
+            event.shortName.toLowerCase().includes(inputHomeTeam.toLowerCase())
+          );
+        }
+        
         // TODO: introduce better error handling
-        const gameData = filteredGame[0];
-        const homeTeamData = gameData.homeTeam;
-        const awayTeamData = gameData.awayTeam;
+        const gameData = selectedLeague === "nhl" ? filteredGame[0] : filteredGame[0].competitions[0];
+        const homeTeamData = selectedLeague === "nhl" ? gameData.homeTeam : gameData.competitors.find(team => team.homeAway === "home"); // TODO: fix typing
+        const awayTeamData = selectedLeague === "nhl" ? gameData.awayTeam : gameData.competitors.find(team => team.homeAway === "away"); // TODO: fix typing
+
+        // Set the remaining items to upload.
+        const homeTeamName = selectedLeague === "nhl" ? homeTeamData.name.default : homeTeamData.team.name;
+        const homeTeamScore = homeTeamData.score;
+        const homeTeamLogo = selectedLeague === "nhl" ? homeTeamData.logo : homeTeamData.team.logo;
+        const awayTeamName = selectedLeague === "nhl" ? awayTeamData.name.default : awayTeamData.team.name;
+        const awayTeamScore = awayTeamData.score;
+        const awayTeamLogo = selectedLeague === "nhl" ? awayTeamData.logo : awayTeamData.team.logo;
+        const recapLink = selectedLeague === "nhl" ? gameData.gameCenterLink : filteredGame[0].links.find(link => link.text === "Recap").href; // TODO: handle instances without a recap
+        const venue = selectedLeague === "nhl" ? gameData.venue.default : gameData.venue.fullName;
 
         if (formattedDate && inputHomeTeam && inputAwayTeam) {
           const gameToLoad: Game = {
             league: selectedLeague,
             game_date: formattedDate,
             home_team: inputHomeTeam,
-            home_team_name: homeTeamData.name.default,
-            home_team_score: homeTeamData.score,
-            home_team_logo: homeTeamData.logo,
+            home_team_name: homeTeamName,
+            home_team_score: homeTeamScore,
+            home_team_logo: homeTeamLogo,
             away_team: inputAwayTeam,
-            away_team_name: awayTeamData.name.default,
-            away_team_score: awayTeamData.score,
-            away_team_logo: awayTeamData.logo,
-            game_center_link: gameData.gameCenterLink,
-            arena: gameData.venue.default
+            away_team_name: awayTeamName,
+            away_team_score: awayTeamScore,
+            away_team_logo: awayTeamLogo,
+            game_center_link: recapLink,
+            arena: venue
           }
 
            // POST this to our DB

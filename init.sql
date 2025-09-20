@@ -5,11 +5,11 @@
 CREATE TABLE IF NOT EXISTS games (
     league VARCHAR(3) NOT NULL, 
     game_date DATE NOT NULL,
-    home_team VARCHAR(3) NOT NULL,
+    home_team VARCHAR(4) NOT NULL,
     home_team_name VARCHAR(50) NOT NULL,
     home_team_score INTEGER NOT NULL,
     home_team_logo TEXT NOT NULL,
-    away_team VARCHAR(3) NOT NULL,
+    away_team VARCHAR(4) NOT NULL,
     away_team_name VARCHAR(50) NOT NULL,
     away_team_score INTEGER NOT NULL,
     away_team_logo TEXT NOT NULL,

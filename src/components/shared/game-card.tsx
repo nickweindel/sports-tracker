@@ -61,7 +61,7 @@ export function GameCards({gamesData} : GameCardsProps) {
                      </CardContent>
                      <CardFooter className="font-light text-sm flex justify-center">
                         <span>
-                            View game recap on <a href={`https://nhl.com${game.game_center_link}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 underline">NHL.com</a>
+                            View <a href={`https://nhl.com${game.game_center_link}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 underline">game recap</a>
                         </span>
                      </CardFooter>
                 </Card>

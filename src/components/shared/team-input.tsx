@@ -6,11 +6,11 @@ interface TeamInputProps {
 }
 
 export const TeamInput = ({ homeOrAway, setTeam }: TeamInputProps) => {
-  const placeholder = `Enter ${homeOrAway} Team 3-Letter Code`
+  const placeholder = `Enter ${homeOrAway} Team Abbreviation`
 
   return (
     <>
-      <Input type="text" placeholder={placeholder} maxLength={3} onChange={(e) => setTeam(e.target.value)} />
+      <Input type="text" placeholder={placeholder} maxLength={4} onChange={(e) => setTeam(e.target.value)} />
     </>
   )
 }

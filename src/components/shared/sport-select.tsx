@@ -19,6 +19,11 @@ export function SportSelect({ onChange } : SportSelectProps) {
       label: 'NHL',
       imageSrc: '/nhl.png',
     },
+    {
+      value: 'cfb',
+      label: 'College Football',
+      imageSrc: '/ncaa.png'
+    }
   ]
 
   return (

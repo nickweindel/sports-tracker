@@ -46,13 +46,13 @@ export async function closePool(): Promise<void> {
 // Database operations
 export const db = {
   // Get all games seen
-  async getAllGames(): Promise<Game[]> {
-    const result = await query('SELECT * FROM games ORDER BY game_date DESC');
+  async getAllGames(league: string): Promise<Game[]> {
+    const result = await query(`SELECT * FROM games WHERE league = '${league}' ORDER BY game_date DESC`);
     return result.rows
   },
 
   // Get arenas
-  async getArenas(): Promise<Arena[]> {
+  async getArenas(league: string): Promise<Arena[]> {
     const result = await query(`
       SELECT 
          league,
@@ -60,6 +60,8 @@ export const db = {
          COUNT(*) AS visits
       FROM 
          games
+      WHERE 
+         league = '${league}'
       GROUP BY 
         league,
         arena      
@@ -68,25 +70,31 @@ export const db = {
   },
 
   // Get team records
-  async getTeamRecords(): Promise<TeamRecord[]> {
+  async getTeamRecords(league: string): Promise<TeamRecord[]> {
     const result = await query(`
       WITH cte_home_record AS(
         SELECT 
           league AS league,
           home_team AS team, 
           home_team_logo AS team_logo,
-          CASE 
+          SUM(CASE 
             WHEN home_team_score > away_team_score 
             THEN 1
             ELSE 0 
-          END AS home_team_wins,
-          CASE 
+          END) AS home_team_wins,
+          SUM(CASE 
             WHEN home_team_score < away_team_score
             THEN 1 
             ELSE 0 
-          END AS home_team_losses
+          END) AS home_team_losses
         FROM 
           games
+        WHERE 
+          league = '${league}'
+        GROUP BY 
+          league,
+          home_team,
+          home_team_logo
       )
 
       ,cte_away_record AS(
@@ -94,18 +102,24 @@ export const db = {
           league AS league,
           away_team AS team,
           away_team_logo AS team_logo,
-          CASE 
+          SUM(CASE 
             WHEN away_team_score > home_team_score
             THEN 1
             ELSE 0
-          END AS away_team_wins,
-          CASE 
+          END) AS away_team_wins,
+          SUM(CASE 
             WHEN away_team_score < home_team_score
             THEN 1 
             ELSE 0 
-          END AS away_team_losses
+          END) AS away_team_losses
         FROM 
           games
+        WHERE 
+          league = '${league}'
+        GROUP BY 
+          league,
+          away_team,
+          away_team_logo
       )
 
       SELECT
