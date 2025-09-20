@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { ChevronDownIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { GameCards } from "@/components/shared/game-card";
-import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
@@ -16,6 +15,7 @@ import {
 import { TeamInput } from "@/components/shared/team-input";
 import { TeamRecords } from "@/components/shared/team-records";
 import { SportSelect } from "@/components/shared/sport-select";
+import { Skeleton } from "@/components/ui/skeleton";
 import { VisitKpi } from "@/components/shared/visit-kpi";
 
 import { Arena } from "@/types/arena"
@@ -32,6 +32,11 @@ export default function Home() {
   const [records, setRecords] = useState<TeamRecord[]>([]);
   const [arenas, setArenas] = useState<Arena[]>([]);
 
+  // Loading state variables.
+  const [isGamesLoading, setIsGamesLoading] = useState<boolean>(true);
+  const [isTeamRecordsLoading, setIsTeamRecordsLoading] = useState<boolean>(true);
+  const [isArenasLoading, setIsArenasLoading] = useState<boolean>(true);
+
   // Decide if we're calling the venues stadiums or arenas.
   const venueType = selectedLeague === "nhl" ? "Arenas" : "Stadiums";
 
@@ -43,6 +48,7 @@ export default function Home() {
   // Function to fetch all games from the database
   const fetchGames = async () => {
     try {
+      setIsGamesLoading(true);
       const response = await fetch(`/api/games?league=${selectedLeague}`);
       const data = await response.json();
       if (response.ok) {
@@ -54,6 +60,8 @@ export default function Home() {
       }
     } catch (error) {
       console.error('Error fetching games:', error);
+    } finally {
+      setIsGamesLoading(false);
     }
   };
 
@@ -77,6 +85,7 @@ export default function Home() {
   // Function to fetch all team records from the database
   const fetchTeamRecords = async() => {
     try {
+      setIsTeamRecordsLoading(true);
       const response = await fetch(`/api/teams?league=${selectedLeague}`);
       const data = await response.json();
       if (response.ok) {
@@ -88,6 +97,8 @@ export default function Home() {
       } 
     } catch (error) {
       console.error('Error fetching games:', error);
+    } finally {
+      setIsTeamRecordsLoading(false);
     }
   };
 
@@ -98,6 +109,7 @@ export default function Home() {
   // Function to fetch all arena visits from the database.
   const fetchArenas = async() => {
     try {
+      setIsArenasLoading(true);
       const response = await fetch(`/api/arenas?league=${selectedLeague}`);
       const data = await response.json();
       if (response.ok) {
@@ -109,6 +121,8 @@ export default function Home() {
       }
     } catch (error) {
       console.error('Error fetching games:', error);
+    } finally {
+      setIsArenasLoading(false);
     }
   }
 
@@ -212,9 +226,9 @@ export default function Home() {
       <div className="flex flex-col gap-3 p-3 w-70">
         <SportSelect onChange={handleLeagueChange} />
         <hr className="my-4 border-gray-300" />
-        <VisitKpi seenAttribute="Games" numberSeen={distinctGames} />
-        <VisitKpi seenAttribute="Teams" numberSeen={distinctTeams}/>
-        <VisitKpi seenAttribute={venueType} numberSeen={distinctArenas}/>
+        <VisitKpi seenAttribute="Games" numberSeen={distinctGames} isLoading={isGamesLoading} />
+        <VisitKpi seenAttribute="Teams" numberSeen={distinctTeams} isLoading={isGamesLoading} />
+        <VisitKpi seenAttribute={venueType} numberSeen={distinctArenas} isLoading={isGamesLoading} />
         <hr className="my-4 border-gray-300" />
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
@@ -244,13 +258,25 @@ export default function Home() {
         <Button onClick={submitGame} disabled={!date || !inputHomeTeam || !inputAwayTeam}>Submit Game</Button>
       </div>
       <div className="flex flex-col gap-3 w-150">
-        <GameCards gamesData={games} />
+        {isTeamRecordsLoading ? 
+          <Skeleton className="w-full h-full" />
+        : (
+          <GameCards gamesData={games} />
+        )}
       </div>
       <div className="w-100">
-        <TeamRecords recordsData={records} /> 
+        {isTeamRecordsLoading ? 
+          <Skeleton className="w-full h-full" />
+        : (
+          <TeamRecords recordsData={records} /> 
+        )}
       </div>
       <div className="w-100">
-        <ArenaVisits arenasData={arenas} venueType={venueType} />
+        {isArenasLoading ?
+          <Skeleton className="w-full h-full" />
+        : ( 
+          <ArenaVisits arenasData={arenas} venueType={venueType} />
+        )}
       </div>
     </div>
   );

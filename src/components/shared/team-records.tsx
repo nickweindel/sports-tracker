@@ -76,9 +76,6 @@ export function TeamRecords({recordsData} : TeamRecordProps) {
                             const losses = team[`${recordDimension}_losses` as keyof TeamRecord] as number;
                             const winningPercentage = team.winningPercentage;
                             const formattedWinningPercentage = numeral(winningPercentage / 10).format('0.000');
-                            console.log(team);
-                            console.log(wins);
-                            console.log(losses);
                             
                             return (
                                 <Card key={team.team}>
