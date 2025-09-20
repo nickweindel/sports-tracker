@@ -20,6 +20,11 @@ export function SportSelect({ onChange } : SportSelectProps) {
       imageSrc: '/nhl.png',
     },
     {
+      value: 'nba',
+      label: 'NBA',
+      imageSrc: '/nba.png',
+    },
+    {
       value: 'cfb',
       label: 'College Football',
       imageSrc: '/ncaa.png'

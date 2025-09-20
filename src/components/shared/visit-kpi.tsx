@@ -21,7 +21,7 @@ export function VisitKpi({seenAttribute, numberSeen, isLoading} : VisitKpiProps)
                     <Skeleton className="w-[30px]" />
                 : (
                     <div className="font-bold">
-                        {numberSeen}
+                        {numberSeen > 0 ? numberSeen: "-"}
                     </div>
                 )}
             </CardContent>

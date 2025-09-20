@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronDownIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { GameCards } from "@/components/shared/game-card";
+import { NoGamesMessage } from "@/components/shared/no-data";
 import {
   Popover,
   PopoverContent,
@@ -36,6 +37,9 @@ export default function Home() {
   const [isGamesLoading, setIsGamesLoading] = useState<boolean>(true);
   const [isTeamRecordsLoading, setIsTeamRecordsLoading] = useState<boolean>(true);
   const [isArenasLoading, setIsArenasLoading] = useState<boolean>(true);
+
+  // Constant to see if we've seen any games.
+  const haveSeenGamesForLeague = games.length > 0;
 
   // Decide if we're calling the venues stadiums or arenas.
   const venueType = selectedLeague === "nhl" ? "Arenas" : "Stadiums";
@@ -260,22 +264,31 @@ export default function Home() {
       <div className="flex flex-col gap-3 w-150">
         {isTeamRecordsLoading ? 
           <Skeleton className="w-full h-full" />
-        : (
+        : haveSeenGamesForLeague ? 
+        (
           <GameCards gamesData={games} />
+        ) : (
+            <NoGamesMessage infoText="No game log data for this league" />
         )}
       </div>
       <div className="w-100">
         {isTeamRecordsLoading ? 
           <Skeleton className="w-full h-full" />
-        : (
+        : haveSeenGamesForLeague ? 
+        (
           <TeamRecords recordsData={records} /> 
+        ) : (
+          <NoGamesMessage infoText="No team record data for this league" />
         )}
       </div>
       <div className="w-100">
         {isArenasLoading ?
           <Skeleton className="w-full h-full" />
-        : ( 
+        : haveSeenGamesForLeague ? 
+        ( 
           <ArenaVisits arenasData={arenas} venueType={venueType} />
+        ) : (
+          <NoGamesMessage infoText={`No ${venueType.toLowerCase()} visit data for this league`} />
         )}
       </div>
     </div>
