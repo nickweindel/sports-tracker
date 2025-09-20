@@ -9,7 +9,7 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { ScoreCard } from "./team-score";
-import { MapPin } from "lucide-react";
+import { MapPin, Trash2 } from "lucide-react";
 
 import { Game } from "@/types/game";
 
@@ -20,6 +20,7 @@ interface GameCardsProps {
 export function GameCards({gamesData} : GameCardsProps) {
     const logoDimensions: number = 64;
     const iconDimensions: number = 18;
+    const trashDimensions: number = 20;
 
     return (
         <>
@@ -60,12 +61,13 @@ export function GameCards({gamesData} : GameCardsProps) {
                          </div>
                      </CardContent>
                      <CardFooter className="font-light text-sm flex justify-center">
-                        <span>
-                            { /* TODO: do this more elegantly */ }
-                            View <a 
-                                href={`${game.game_center_link.includes('espn') ? '' : 'https://nhl.com'}${game.game_center_link}`}
+                        <span className="flex flex-row">
+                            <a 
+                                href={`${game.game_center_link}`}
                                 target="_blank" rel="noopener noreferrer" 
-                                className="text-blue-600 hover:text-blue-800 underline">game recap</a>
+                                className="text-blue-600 hover:text-blue-800 underline">Game recap</a>
+                            <div className="border-l-2 mx-2 h-6"></div> 
+                            <Trash2 className={`w-[${trashDimensions}px] h-[${trashDimensions}px]`} />
                         </span>
                      </CardFooter>
                 </Card>
