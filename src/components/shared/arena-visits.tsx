@@ -12,9 +12,10 @@ import { Arena } from "@/types/arena";
 
 interface ArenaVisitsProps {
     arenasData: Arena[] 
+    venueType: string;
 }
 
-export function ArenaVisits({ arenasData } : ArenaVisitsProps) {
+export function ArenaVisits({ arenasData, venueType } : ArenaVisitsProps) {
     // Calculate arena visits and sort them
     const sortedArenas = arenasData.sort((a, b) => b.visits - a.visits);
 
@@ -23,7 +24,7 @@ export function ArenaVisits({ arenasData } : ArenaVisitsProps) {
             <Card>
                 <CardHeader>
                     <CardTitle className="text-center">
-                        Arenas Visited
+                        {venueType} Visited
                     </CardTitle>
                     <CardContent className="flex items-center justify-between m-2">
                         <div className="space-y-2 w-full">

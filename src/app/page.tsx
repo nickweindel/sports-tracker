@@ -32,6 +32,9 @@ export default function Home() {
   const [records, setRecords] = useState<TeamRecord[]>([]);
   const [arenas, setArenas] = useState<Arena[]>([]);
 
+  // Decide if we're calling the venues stadiums or arenas.
+  const venueType = selectedLeague === "nhl" ? "Arenas" : "Stadiums";
+
   // Function to handle changing the league.
   const handleLeagueChange = (value: string) => {
     setSelectedLeague(value)
@@ -211,11 +214,8 @@ export default function Home() {
         <hr className="my-4 border-gray-300" />
         <VisitKpi seenAttribute="Games" numberSeen={distinctGames} />
         <VisitKpi seenAttribute="Teams" numberSeen={distinctTeams}/>
-        <VisitKpi seenAttribute="Arenas" numberSeen={distinctArenas}/>
+        <VisitKpi seenAttribute={venueType} numberSeen={distinctArenas}/>
         <hr className="my-4 border-gray-300" />
-        <Label htmlFor="date" className="px-1">
-          Game Date
-        </Label>
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
@@ -250,7 +250,7 @@ export default function Home() {
         <TeamRecords recordsData={records} /> 
       </div>
       <div className="w-100">
-        <ArenaVisits arenasData={arenas} />
+        <ArenaVisits arenasData={arenas} venueType={venueType} />
       </div>
     </div>
   );
