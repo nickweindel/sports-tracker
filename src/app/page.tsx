@@ -140,12 +140,9 @@ export default function Home() {
     let apiDate: string | undefined;
 
     if (date) {
-      if (selectedLeague === 'cfb') {
+      if (selectedLeague !== 'nhl') {
         // Format: 20250912
         apiDate = date.toISOString().split('T')[0].replace(/-/g, '');
-      } else if (selectedLeague === 'nhl') {
-        // Format: 2025-09-12
-        apiDate = date.toISOString().split('T')[0];
       } else {
         // Default format if needed
         apiDate = date.toISOString().split('T')[0];
