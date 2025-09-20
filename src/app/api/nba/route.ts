@@ -10,7 +10,6 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    console.log(`${API_BASE}/basketball/nba/${API_PATH}?dates=${date}`)
     const response = await fetch(`${API_BASE}/basketball/nba/${API_PATH}?dates=${date}`)
     
     if (!response.ok) {

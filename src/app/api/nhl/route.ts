@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server';
+import { API_BASE, API_PATH } from '@/lib/constants';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
@@ -9,7 +10,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const response = await fetch(`https://api-web.nhle.com/v1/score/${date}`)
+    const response = await fetch(`${API_BASE}/hockey/nhl/${API_PATH}?dates=${date}`)
     
     if (!response.ok) {
       throw new Error(`NHL API responded with status: ${response.status}`)

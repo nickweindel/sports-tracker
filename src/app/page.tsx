@@ -156,31 +156,24 @@ export default function Home() {
       .then(data => {
         let filteredGame;
 
-        if (selectedLeague === "nhl") {
-          filteredGame = data.games.filter((game: any) => 
-            game.awayTeam.abbrev === inputAwayTeam && game.homeTeam.abbrev === inputHomeTeam
-          );
-        } else {
-          filteredGame = data.events.filter((event: any) =>
+        filteredGame = data.events.filter((event: any) =>
             event.shortName.toLowerCase().includes(inputAwayTeam.toLowerCase()) &&
-            event.shortName.toLowerCase().includes(inputHomeTeam.toLowerCase())
-          );
-        }
+            event.shortName.toLowerCase().includes(inputHomeTeam.toLowerCase()))
         
         // TODO: introduce better error handling
-        const gameData = selectedLeague === "nhl" ? filteredGame[0] : filteredGame[0].competitions[0];
-        const homeTeamData = selectedLeague === "nhl" ? gameData.homeTeam : gameData.competitors.find(team => team.homeAway === "home"); // TODO: fix typing
-        const awayTeamData = selectedLeague === "nhl" ? gameData.awayTeam : gameData.competitors.find(team => team.homeAway === "away"); // TODO: fix typing
+        const gameData = filteredGame[0].competitions[0];
+        const homeTeamData = gameData.competitors.find(team => team.homeAway === "home"); // TODO: fix typing
+        const awayTeamData = gameData.competitors.find(team => team.homeAway === "away"); // TODO: fix typing
 
         // Set the remaining items to upload.
-        const homeTeamName = selectedLeague === "nhl" ? homeTeamData.name.default : homeTeamData.team.name;
+        const homeTeamName = homeTeamData.team.name;
         const homeTeamScore = homeTeamData.score;
-        const homeTeamLogo = selectedLeague === "nhl" ? homeTeamData.logo : homeTeamData.team.logo;
-        const awayTeamName = selectedLeague === "nhl" ? awayTeamData.name.default : awayTeamData.team.name;
+        const homeTeamLogo = homeTeamData.team.logo;
+        const awayTeamName = awayTeamData.team.name;
         const awayTeamScore = awayTeamData.score;
-        const awayTeamLogo = selectedLeague === "nhl" ? awayTeamData.logo : awayTeamData.team.logo;
-        const recapLink = selectedLeague === "nhl" ? gameData.gameCenterLink : filteredGame[0].links.find(link => link.text === "Recap").href; // TODO: handle instances without a recap
-        const venue = selectedLeague === "nhl" ? gameData.venue.default : gameData.venue.fullName;
+        const awayTeamLogo = awayTeamData.team.logo;
+        const recapLink = filteredGame[0].links.find(link => link.text === "Recap").href; // TODO: handle instances without a recap
+        const venue = gameData.venue.fullName;
 
         if (formattedDate && inputHomeTeam && inputAwayTeam) {
           const gameToLoad: Game = {
