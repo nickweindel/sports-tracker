@@ -46,11 +46,16 @@ export function SportSelect({ onChange } : SportSelectProps) {
       value: 'college-basketball',
       label: 'College Basketball',
       imageSrc: ncaaPath,
+    },
+    {
+      value: 'arg.1',
+      label: 'Argentine Primera División',
+      imageSrc: `/${publicSubDirectory}/argentine-primera.png`
     }
   ]
 
   return (
-    <Select defaultValue="nhl" onValueChange={onChange}>
+    <Select defaultValue="mlb" onValueChange={onChange}>
       <SelectTrigger className="w-auto">
         <SelectValue placeholder="Select a league" />
       </SelectTrigger>

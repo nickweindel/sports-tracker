@@ -14,6 +14,7 @@ export const LEAGUE_TO_SPORT_MAPPING: Record<League, Sport[keyof Sport]> = {
     "college-basketball": "basketball",
     "nfl": "football",
     "mlb": "baseball",
+    "arg.1": "soccer",
 }
 
 // League-to-venue mapping.
@@ -24,4 +25,16 @@ export const LEAGUE_TO_VENUE_TYPE_MAPPING: Record<League, VenueType[keyof VenueT
     "college-basketball": "Arenas",
     "nfl": "Stadiums",
     "mlb": "Stadiums",
+    "arg.1": "Stadiums",
+}
+
+// Leagues where we should display ties.
+export const LEAGUE_TIES_ALLOWED: { [key: string]: boolean} = {
+    "arg.1": true,
+    "nfl": true,
+    "nhl": false, // they did allow ties in the past though
+    "mlb": false,
+    "college-football": false,
+    "college-basketball": false,
+    "nba": false,
 }

@@ -86,7 +86,12 @@ export const db = {
             WHEN home_team_score < away_team_score
             THEN 1 
             ELSE 0 
-          END) AS home_team_losses
+          END) AS home_team_losses,
+          SUM(CASE
+            WHEN home_team_score = away_team_score
+            THEN 1
+            ELSE 0
+          END) AS home_team_ties
         FROM 
           games
         WHERE 
@@ -111,7 +116,12 @@ export const db = {
             WHEN away_team_score < home_team_score
             THEN 1 
             ELSE 0 
-          END) AS away_team_losses
+          END) AS away_team_losses,
+          SUM(CASE
+            WHEN away_team_score = home_team_score
+            THEN 1
+            ELSE 0
+          END) AS away_team_ties
         FROM 
           games
         WHERE 
@@ -128,10 +138,13 @@ export const db = {
         COALESCE(home.team_logo, away.team_logo) AS team_logo,
         SUM(COALESCE(home.home_team_wins, 0)) AS home_wins,
         SUM(COALESCE(home.home_team_losses, 0)) AS home_losses,
+        SUM(COALESCE(home.home_team_ties,0)) AS home_ties,
         SUM(COALESCE(away.away_team_wins, 0)) AS away_wins,
         SUM(COALESCE(away.away_team_losses, 0)) AS away_losses,
+        SUM(COALESCE(away.away_team_ties,0)) AS away_ties,
         SUM(COALESCE(home.home_team_wins, 0) + COALESCE(away.away_team_wins, 0)) AS overall_wins,
-        SUM(COALESCE(home.home_team_losses, 0) + COALESCE(away.away_team_losses, 0)) AS overall_losses
+        SUM(COALESCE(home.home_team_losses, 0) + COALESCE(away.away_team_losses, 0)) AS overall_losses,
+        SUM(COALESCE(home.home_team_ties,0) + COALESCE(away.away_team_ties,0)) AS overall_ties
       FROM 
         cte_home_record home
       FULL OUTER JOIN

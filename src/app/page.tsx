@@ -28,7 +28,7 @@ import { LEAGUE_TO_SPORT_MAPPING } from "@/lib/constants";
 import { LEAGUE_TO_VENUE_TYPE_MAPPING } from "@/lib/constants";
 
 export default function Home() {
-  const [selectedLeague, setSelectedLeague] = useState<string>("nhl");
+  const [selectedLeague, setSelectedLeague] = useState<string>("mlb");
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [inputHomeTeam, setHomeTeam] = useState<string>("");

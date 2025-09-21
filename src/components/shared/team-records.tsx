@@ -16,7 +16,10 @@ import {
     SelectValue,
   } from "@/components/ui/select";
 
+import { LEAGUE_TIES_ALLOWED } from "@/lib/constants";
+
 import { TeamRecord } from "@/types/team-record";
+
 import numeral from "numeral";
 
 interface TeamRecordProps {
@@ -37,12 +40,14 @@ export function TeamRecords({recordsData} : TeamRecordProps) {
         .filter(team => {
             const wins = team[`${recordDimension}_wins` as keyof TeamRecord] as number;
             const losses = team[`${recordDimension}_losses` as keyof TeamRecord] as number;
-            return wins + losses > 0; // Only include teams that have played games
+            const ties = team[`${recordDimension}_ties` as keyof TeamRecord] as number;
+            return wins + losses + ties > 0; // Only include teams that have played games
         })
         .map(team => {
             const wins = team[`${recordDimension}_wins` as keyof TeamRecord] as number;
             const losses = team[`${recordDimension}_losses` as keyof TeamRecord] as number;
-            const winningPercentage = (Number(wins) / (Number(wins) + Number(losses))) * 10;
+            const ties = team[`${recordDimension}_ties` as keyof TeamRecord] as number;
+            const winningPercentage = ((Number(wins) +(Number(ties) * 0.5)) / (Number(wins) + Number(losses) + Number(ties))) * 10;
             
             return {
                 ...team,
@@ -74,8 +79,10 @@ export function TeamRecords({recordsData} : TeamRecordProps) {
                         {sortedTeams.map((team) => {
                             const wins = team[`${recordDimension}_wins` as keyof TeamRecord] as number;
                             const losses = team[`${recordDimension}_losses` as keyof TeamRecord] as number;
+                            const ties = team[`${recordDimension}_ties` as keyof TeamRecord] as number;
                             const winningPercentage = team.winningPercentage;
                             const formattedWinningPercentage = numeral(winningPercentage / 10).format('0.000');
+                            const isTiesAllowed = LEAGUE_TIES_ALLOWED[team.league];
                             
                             return (
                                 <Card key={team.team}>
@@ -88,7 +95,10 @@ export function TeamRecords({recordsData} : TeamRecordProps) {
                                             <span className="font-medium">{team.team}</span>
                                         </div>
                                         <div className="flex items-center gap-4 text-sm">
-                                            <span>{Number(wins)}W - {Number(losses)}L</span>
+                                            <span>
+                                                {Number(wins)}W - {Number(losses)}L
+                                                {isTiesAllowed && ` - ${Number(ties)}T`}
+                                            </span>
                                             <span className="font-bold">
                                                 {formattedWinningPercentage}
                                             </span>

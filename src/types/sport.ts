@@ -1,1 +1,1 @@
-export type Sport = "football" | "basketball" | "hockey" | "baseball";
+export type Sport = "football" | "basketball" | "hockey" | "baseball" | "soccer";

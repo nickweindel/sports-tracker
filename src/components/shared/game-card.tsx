@@ -63,11 +63,15 @@ export function GameCards({gamesData, onDelete} : GameCardsProps) {
                      </CardContent>
                      <CardFooter className="font-light text-sm flex justify-center">
                         <span className="flex flex-row">
-                            <a 
-                                href={`${game.game_center_link}`}
-                                target="_blank" rel="noopener noreferrer" 
-                                className="text-blue-600 hover:text-blue-800 underline">Game recap</a>
-                            <div className="border-l-2 mx-2 h-6"></div> 
+                            {game.game_center_link && (
+                                <>
+                                    <a 
+                                        href={`${game.game_center_link}`}
+                                        target="_blank" rel="noopener noreferrer" 
+                                        className="text-blue-600 hover:text-blue-800 underline">Game recap</a>
+                                    <div className="border-l-2 mx-2 h-6"></div> 
+                                </>
+                            )}
                             <Trash2 
                                 className={`w-[${trashDimensions}px] h-[${trashDimensions}px] cursor-pointer`}
                                 onClick={() => onDelete(game)} />
