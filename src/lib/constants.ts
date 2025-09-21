@@ -11,6 +11,9 @@ export const LEAGUE_TO_SPORT_MAPPING: Record<League, Sport[keyof Sport]> = {
     "college-football": "football",
     "nba": "basketball",
     "nhl": "hockey",
+    "college-basketball": "basketball",
+    "nfl": "football",
+    "mlb": "baseball",
 }
 
 // League-to-venue mapping.
@@ -18,4 +21,7 @@ export const LEAGUE_TO_VENUE_TYPE_MAPPING: Record<League, VenueType[keyof VenueT
     "college-football": "Stadiums",
     "nba": "Arenas",
     "nhl": "Arenas",
+    "college-basketball": "Arenas",
+    "nfl": "Stadiums",
+    "mlb": "Stadiums",
 }

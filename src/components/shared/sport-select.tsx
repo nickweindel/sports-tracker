@@ -14,12 +14,28 @@ interface SportSelectProps {
 
 export function SportSelect({ onChange } : SportSelectProps) {
   const publicSubDirectory = "league-logos";
+  const ncaaPath = `/${publicSubDirectory}/ncaa.png`
 
   const leagues = [
+    {
+      value: 'mlb',
+      label: 'MLB',
+      imageSrc: `/${publicSubDirectory}/mlb.png`,
+    },
     {
       value: 'nhl',
       label: 'NHL',
       imageSrc: `/${publicSubDirectory}/nhl.png`,
+    },
+    {
+      value: 'nfl',
+      label: 'NFL',
+      imageSrc: `/${publicSubDirectory}/nfl.png`,
+    },
+    {
+      value: 'college-football',
+      label: 'College Football',
+      imageSrc: ncaaPath,
     },
     {
       value: 'nba',
@@ -27,9 +43,9 @@ export function SportSelect({ onChange } : SportSelectProps) {
       imageSrc: `/${publicSubDirectory}/nba.png`,
     },
     {
-      value: 'college-football',
-      label: 'College Football',
-      imageSrc: `/${publicSubDirectory}/ncaa.png`
+      value: 'college-basketball',
+      label: 'College Basketball',
+      imageSrc: ncaaPath,
     }
   ]
 

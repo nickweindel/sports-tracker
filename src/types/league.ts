@@ -1,1 +1,1 @@
-export type League = "college-football" | "nba" | "nhl";
+export type League = "college-football" | "nba" | "nhl" | "college-basketball" | "nfl" | "mlb";
