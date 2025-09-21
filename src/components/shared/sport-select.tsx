@@ -13,21 +13,23 @@ interface SportSelectProps {
 }
 
 export function SportSelect({ onChange } : SportSelectProps) {
+  const publicSubDirectory = "league-logos";
+
   const leagues = [
     {
       value: 'nhl',
       label: 'NHL',
-      imageSrc: '/nhl.png',
+      imageSrc: `/${publicSubDirectory}/nhl.png`,
     },
     {
       value: 'nba',
       label: 'NBA',
-      imageSrc: '/nba.png',
+      imageSrc: `/${publicSubDirectory}/nba.png`,
     },
     {
       value: 'college-football',
       label: 'College Football',
-      imageSrc: '/ncaa.png'
+      imageSrc: `/${publicSubDirectory}/ncaa.png`
     }
   ]
 
