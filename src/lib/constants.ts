@@ -11,7 +11,7 @@ export const LEAGUE_TO_SPORT_MAPPING: Record<League, Sport[keyof Sport]> = {
     "college-football": "football",
     "nba": "basketball",
     "nhl": "hockey",
-    "college-basketball": "basketball",
+    "mens-college-basketball": "basketball",
     "nfl": "football",
     "mlb": "baseball",
     "arg.1": "soccer",
@@ -22,7 +22,7 @@ export const LEAGUE_TO_VENUE_TYPE_MAPPING: Record<League, VenueType[keyof VenueT
     "college-football": "Stadiums",
     "nba": "Arenas",
     "nhl": "Arenas",
-    "college-basketball": "Arenas",
+    "mens-college-basketball": "Arenas",
     "nfl": "Stadiums",
     "mlb": "Stadiums",
     "arg.1": "Stadiums",
@@ -35,6 +35,6 @@ export const LEAGUE_TIES_ALLOWED: { [key: string]: boolean} = {
     "nhl": false, // they did allow ties in the past though
     "mlb": false,
     "college-football": false,
-    "college-basketball": false,
+    "mens-college-basketball": false,
     "nba": false,
 }

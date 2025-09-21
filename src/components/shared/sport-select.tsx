@@ -43,7 +43,7 @@ export function SportSelect({ onChange } : SportSelectProps) {
       imageSrc: `/${publicSubDirectory}/nba.png`,
     },
     {
-      value: 'college-basketball',
+      value: 'mens-college-basketball',
       label: 'College Basketball',
       imageSrc: ncaaPath,
     },
