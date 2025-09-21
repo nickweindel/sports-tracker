@@ -176,5 +176,29 @@ export const db = {
 
     const result = await query(sql, params);
     return result.rows[0];
+  },
+
+  // Delete a game. 
+  async deleteGame(game: Game): Promise<Game | null> {
+    const { league, game_date, home_team, away_team } = game;
+    
+    try {
+      // Run your DELETE SQL query (assuming you're using a PostgreSQL database)
+      const result = await query(
+        'DELETE FROM games WHERE league = $1 AND game_date = $2 AND home_team = $3 AND away_team = $4 RETURNING *',
+        [league, game_date, home_team, away_team]
+      );
+      
+      // If no rows are deleted, return null
+      if (result.rowCount === 0) {
+        return null;
+      }
+  
+      // Return the deleted game data (the first row from the result)
+      return result.rows[0] as Game;  // Casting result to Game type
+    } catch (error) {
+      console.error('Error deleting game:', error);
+      throw new Error('Failed to delete game');
+    }
   }
-};
+}

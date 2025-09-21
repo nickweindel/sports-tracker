@@ -21,7 +21,11 @@ import { VisitKpi } from "@/components/shared/visit-kpi";
 
 import { Arena } from "@/types/arena"
 import { Game } from "@/types/game";
+import { League } from "@/types/league";
 import { TeamRecord } from "@/types/team-record";
+
+import { LEAGUE_TO_SPORT_MAPPING } from "@/lib/constants";
+import { LEAGUE_TO_VENUE_TYPE_MAPPING } from "@/lib/constants";
 
 export default function Home() {
   const [selectedLeague, setSelectedLeague] = useState<string>("nhl");
@@ -42,7 +46,7 @@ export default function Home() {
   const haveSeenGamesForLeague = games.length > 0;
 
   // Decide if we're calling the venues stadiums or arenas.
-  const venueType = selectedLeague === "nhl" ? "Arenas" : "Stadiums";
+  const venueType = LEAGUE_TO_VENUE_TYPE_MAPPING[selectedLeague as League]
 
   // Function to handle changing the league.
   const handleLeagueChange = (value: string) => {
@@ -134,24 +138,42 @@ export default function Home() {
     fetchArenas()
   }, [games, selectedLeague]);
 
+  // Handle delete.
+  const handleDelete = async (game: Game) => {
+      try {
+        // Send DELETE request to the API
+        const response = await fetch('/api/games', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(game),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Game deleted:', data);
+
+          fetchGames();
+        } else {
+          const errorData = await response.json();
+          console.error('Failed to delete game:', errorData);
+          alert(errorData.error || 'Failed to delete game');
+        }
+      } catch (error) {
+        console.error('Error deleting game:', error);
+        alert('An error occurred while deleting the game');
+      }
+  };
+
   const submitGame = () => {
     // TODO: there has to be a better way to abstract this, especially when we continue to add leagues
-    const formattedDate = date ? date.toISOString().split('T')[0] : undefined
-    let apiDate: string | undefined;
+    const formattedDate = date ? date.toISOString().split('T')[0] : undefined;
+    const apiDate = date ? date.toISOString().split('T')[0].replace(/-/g, '') : undefined;
 
-    if (date) {
-      if (selectedLeague !== 'nhl') {
-        // Format: 20250912
-        apiDate = date.toISOString().split('T')[0].replace(/-/g, '');
-      } else {
-        // Default format if needed
-        apiDate = date.toISOString().split('T')[0];
-      }
-    } else {
-      apiDate = undefined;
-    }
+    const sport = LEAGUE_TO_SPORT_MAPPING[selectedLeague as League];
     
-    fetch(`/api/${selectedLeague}?date=${apiDate}`)
+    fetch(`/api/${sport}/${selectedLeague}?date=${apiDate}`)
       .then(response => response.json())
       .then(data => {
         let filteredGame;
@@ -172,7 +194,8 @@ export default function Home() {
         const awayTeamName = awayTeamData.team.name;
         const awayTeamScore = awayTeamData.score;
         const awayTeamLogo = awayTeamData.team.logo;
-        const recapLink = filteredGame[0].links.find(link => link.text === "Recap").href; // TODO: handle instances without a recap
+        const recapLink = filteredGame[0].links.find(link => link.text === "Recap")?.href
+          || filteredGame[0].links.find(link => link.text === "Box Score")?.href;
         const venue = gameData.venue.fullName;
 
         if (formattedDate && inputHomeTeam && inputAwayTeam) {
@@ -216,6 +239,7 @@ export default function Home() {
   }
   
   return (
+    // TODO: fix typing w/r/t to venueType
     <div className="flex flex-row gap-3 p-3">
       <div className="flex flex-col gap-3 p-3 w-70">
         <SportSelect onChange={handleLeagueChange} />
@@ -256,7 +280,7 @@ export default function Home() {
           <Skeleton className="w-full h-full" />
         : haveSeenGamesForLeague ? 
         (
-          <GameCards gamesData={games} />
+          <GameCards gamesData={games} onDelete={handleDelete} />
         ) : (
             <NoGamesMessage infoText="No game log data for this league" />
         )}

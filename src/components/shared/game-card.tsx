@@ -14,10 +14,11 @@ import { MapPin, Trash2 } from "lucide-react";
 import { Game } from "@/types/game";
 
 interface GameCardsProps {
-    gamesData: Game[]
+    gamesData: Game[];
+    onDelete: (game: Game) => void;
 }
 
-export function GameCards({gamesData} : GameCardsProps) {
+export function GameCards({gamesData, onDelete} : GameCardsProps) {
     const logoDimensions: number = 64;
     const iconDimensions: number = 18;
     const trashDimensions: number = 20;
@@ -67,7 +68,9 @@ export function GameCards({gamesData} : GameCardsProps) {
                                 target="_blank" rel="noopener noreferrer" 
                                 className="text-blue-600 hover:text-blue-800 underline">Game recap</a>
                             <div className="border-l-2 mx-2 h-6"></div> 
-                            <Trash2 className={`w-[${trashDimensions}px] h-[${trashDimensions}px]`} />
+                            <Trash2 
+                                className={`w-[${trashDimensions}px] h-[${trashDimensions}px] cursor-pointer`}
+                                onClick={() => onDelete(game)} />
                         </span>
                      </CardFooter>
                 </Card>

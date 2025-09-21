@@ -3,7 +3,7 @@
 
 -- Create table for NHL games
 CREATE TABLE IF NOT EXISTS games (
-    league VARCHAR(3) NOT NULL, 
+    league VARCHAR(100) NOT NULL, 
     game_date DATE NOT NULL,
     home_team VARCHAR(4) NOT NULL,
     home_team_name VARCHAR(50) NOT NULL,
