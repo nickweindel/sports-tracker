@@ -147,3 +147,4 @@ CREATE TABLE IF NOT EXISTS games (
 - [ ] Integrate automated handling of certain edge cases (e.g. relocated teams, neutral sites, etc.)
 - [ ] Create analytics (e.g. top goal scorers for NHL games, winning pitchers for MLB games, etc.)
 - [ ] Refactor game selection to require less manual input (i.e. create a dropdown of selectable games once a league is selected)
+- [ ] Allow ability to share games attended with others (i.e. have a view-only mode)
