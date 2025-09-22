@@ -17,19 +17,25 @@ A web application built with **Next.js**, **PostgreSQL**, and **ShadCN UI**, des
 
 ```sql
 CREATE TABLE IF NOT EXISTS games (
-    league VARCHAR(100) NOT NULL, 
+    game_id INTEGER NOT NULL,
+    league TEXT NOT NULL, 
     game_date DATE NOT NULL,
-    home_team VARCHAR(4) NOT NULL,
-    home_team_name VARCHAR(50) NOT NULL,
+    home_team TEXT NOT NULL,
+    home_team_name TEXT NOT NULL,
     home_team_score INTEGER NOT NULL,
     home_team_logo TEXT NOT NULL,
-    away_team VARCHAR(4) NOT NULL,
-    away_team_name VARCHAR(50) NOT NULL,
+    home_team_rank TEXT NULL,
+    away_team TEXT NOT NULL,
+    away_team_name TEXT NOT NULL,
     away_team_score INTEGER NOT NULL,
     away_team_logo TEXT NOT NULL,
+    away_team_rank TEXT NULL,
     game_center_link TEXT,
-    arena VARCHAR(100) NOT NULL,
-    PRIMARY KEY (league, game_date, home_team, away_team)
+    arena TEXT NOT NULL,
+    arena_city TEXT NOT NULL,
+    arena_state TEXT NOT NULL,
+    arena_country TEXT NOT NULL,
+    PRIMARY KEY (game_id, league, game_date, home_team, away_team)
 );
 ```
 

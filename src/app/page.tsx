@@ -229,18 +229,24 @@ export default function Home() {
 
         if (formattedDate && inputHomeTeam && inputAwayTeam) {
           const gameToLoad: Game = {
+            game_id: gameId,
             league: selectedLeague,
             game_date: formattedDate,
             home_team: inputHomeTeam,
             home_team_name: homeTeamName,
             home_team_score: homeTeamScore,
             home_team_logo: homeTeamLogo,
+            home_team_rank: homeTeamRank,
             away_team: inputAwayTeam,
             away_team_name: awayTeamName,
             away_team_score: awayTeamScore,
             away_team_logo: awayTeamLogo,
+            away_team_rank: awayTeamRank,
             game_center_link: recapLink,
-            arena: venue
+            arena: venue,
+            arena_city: venueCity,
+            arena_state: venueState,
+            arena_country: venueCountry,
           }
 
            // POST this to our DB
