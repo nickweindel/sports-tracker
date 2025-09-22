@@ -188,6 +188,7 @@ export default function Home() {
           return;
         }
         
+        const gameId = filteredGame[0].id;
         const gameData = filteredGame[0].competitions[0];
         const homeTeamData = gameData.competitors.find(team => team.homeAway === "home"); // TODO: fix typing
         const awayTeamData = gameData.competitors.find(team => team.homeAway === "away"); // TODO: fix typing
@@ -201,16 +202,30 @@ export default function Home() {
           return;
         }
 
-        // Set the remaining items to upload.
+        // Home team info.
         const homeTeamName = homeTeamData.team.name;
         const homeTeamScore = homeTeamData.score;
         const homeTeamLogo = homeTeamData.team.logo;
+        const homeTeamRank = homeTeamData.curatedRank.current;
+
+        // Away team info.
         const awayTeamName = awayTeamData.team.name;
         const awayTeamScore = awayTeamData.score;
         const awayTeamLogo = awayTeamData.team.logo;
+        const awayTeamRank = awayTeamData.curatedRank.current;
+
+        // Recap/box score link.
         const recapLink = filteredGame[0].links.find(link => link.text === "Recap")?.href
           || filteredGame[0].links.find(link => link.text === "Box Score")?.href;
-        const venue = gameData.venue.fullName;
+
+        // Venue info.
+        const venueData = gameData.venue;
+        const venue = venueData.fullName;
+
+        const venueLocation = venueData.address;
+        const venueCity = venueLocation.city;
+        const venueState = venueLocation.state;
+        const venueCountry = venueLocation.country;
 
         if (formattedDate && inputHomeTeam && inputAwayTeam) {
           const gameToLoad: Game = {
