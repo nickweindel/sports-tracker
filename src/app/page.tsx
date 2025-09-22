@@ -180,12 +180,26 @@ export default function Home() {
 
         filteredGame = data.events.filter((event: any) =>
             event.shortName.toLowerCase().includes(inputAwayTeam.toLowerCase()) &&
-            event.shortName.toLowerCase().includes(inputHomeTeam.toLowerCase()))
+            event.shortName.toLowerCase().includes(inputHomeTeam.toLowerCase()));
+
+        // TODO: handle 
+        if (filteredGame.length === 0) {
+          window.alert(`No game on ${formattedDate} between ${inputHomeTeam} and ${inputAwayTeam}`);
+          return;
+        }
         
-        // TODO: introduce better error handling
         const gameData = filteredGame[0].competitions[0];
         const homeTeamData = gameData.competitors.find(team => team.homeAway === "home"); // TODO: fix typing
         const awayTeamData = gameData.competitors.find(team => team.homeAway === "away"); // TODO: fix typing
+
+        // Check that we have the home and away teams correct.
+        const homeTeamAbbreviation = homeTeamData.team.abbreviation;
+        const awayTeamAbbreviation = awayTeamData.team.abbreviation;
+
+        if (homeTeamAbbreviation !== inputHomeTeam || awayTeamAbbreviation !== inputAwayTeam) {
+          window.alert(`Home and away teams are backwards. The home team is ${inputAwayTeam} and the away team is ${inputHomeTeam}`);
+          return;
+        }
 
         // Set the remaining items to upload.
         const homeTeamName = homeTeamData.team.name;
