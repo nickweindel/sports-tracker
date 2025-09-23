@@ -1,1 +1,0 @@
-export type Sport = "football" | "basketball" | "hockey" | "baseball" | "soccer";

@@ -1,1 +1,0 @@
-export type VenueType = "Stadiums" | "Arenas";
