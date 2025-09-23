@@ -1,5 +1,8 @@
 "use client";
 
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/utils/supabase/server";
+
 import { useEffect, useState } from "react";
 
 import { ArenaVisits } from "@/components/shared/arena-visits";
@@ -27,7 +30,15 @@ import { TeamRecord } from "@/types/team-record";
 import { LEAGUE_TO_SPORT_MAPPING } from "@/lib/constants";
 import { LEAGUE_TO_VENUE_TYPE_MAPPING } from "@/lib/constants";
 
-export default function Home() {
+export default async function PrivatePage() {
+  // Handle auth.
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.auth.getUser();
+  if (error || !data?.user) {
+    redirect('/login');
+  }
+
   const [selectedLeague, setSelectedLeague] = useState<string>("mlb");
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date | undefined>(undefined);
