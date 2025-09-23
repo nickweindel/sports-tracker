@@ -31,10 +31,9 @@ import { LEAGUE_TO_SPORT_MAPPING } from "@/lib/constants";
 import { LEAGUE_TO_VENUE_TYPE_MAPPING } from "@/lib/constants";
 
 export default async function PrivatePage() {
-  // Handle auth.
   const supabase = await createClient();
 
-  const { data, error } = await supabase.auth.getUser();
+  const { data, error } = await supabase.auth.getClaims();
   if (error || !data?.user) {
     redirect('/login');
   }
