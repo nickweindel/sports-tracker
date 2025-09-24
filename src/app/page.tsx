@@ -35,7 +35,7 @@ export default async function PrivatePage() {
 
   const { data, error } = await supabase.auth.getClaims();
   if (error || !data?.user) {
-    redirect('/login');
+    redirect('/auth/login');
   }
 
   const [selectedLeague, setSelectedLeague] = useState<string>("mlb");
