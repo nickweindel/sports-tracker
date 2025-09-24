@@ -12,7 +12,7 @@ export default async function Page() {
   }
 
   // You can also get user metadata here if needed
-  const user = data.claims.user;
+  const user = data.claims.email;
 
   return <PageClient user={user} />;
 }
