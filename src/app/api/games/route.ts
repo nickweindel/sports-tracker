@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
     }
 
     const { data, error } = await supabase
-      .from('games')
+      .from('vw_games')
       .select('*')
       .eq('league', league)
       .eq('user_email', user)
