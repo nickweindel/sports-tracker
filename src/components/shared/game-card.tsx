@@ -45,7 +45,8 @@ export function GameCards({gamesData, onDelete} : GameCardsProps) {
                                 score={game.away_team_score} 
                                 logoSrc={game.away_team_logo} 
                                 logoDimensions={logoDimensions}
-                                logoFirst={true} />
+                                logoFirst={true}
+                                rank={game.away_team_rank} />
                          </div>
                          <div className="flex flex-row items-center">
                             <MapPin height={iconDimensions} width={iconDimensions} />
@@ -58,7 +59,8 @@ export function GameCards({gamesData, onDelete} : GameCardsProps) {
                                 score={game.home_team_score} 
                                 logoSrc={game.home_team_logo} 
                                 logoDimensions={logoDimensions}
-                                logoFirst={false} />
+                                logoFirst={false}
+                                rank={game.home_team_rank} />
                          </div>
                      </CardContent>
                      <CardFooter className="font-light text-sm flex justify-center">
