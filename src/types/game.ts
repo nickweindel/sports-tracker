@@ -1,4 +1,5 @@
 export interface Game {
+  user_email: string;
   game_id: number;
   league: string;
   game_date: string; // YYYY-MM-DD
