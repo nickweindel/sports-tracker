@@ -51,10 +51,21 @@ export function TeamRecords({recordsData} : TeamRecordProps) {
             
             return {
                 ...team,
-                winningPercentage
+                winningPercentage,
+                wins,
+                losses,
             };
         })
-        .sort((a, b) => b.winningPercentage - a.winningPercentage);
+        .sort((a, b) => {
+            if (b.winningPercentage !== a.winningPercentage) {
+              return b.winningPercentage - a.winningPercentage; // primary sort
+            }
+
+            if (b.wins !== a.wins) {
+                return b.wins - a.wins // secondary sort
+            }
+            return a.losses - b.losses; // tertiary sort
+          });
 
     return (
         <div className="flex flex-col gap-3">
