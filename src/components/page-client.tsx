@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createClient } from "@/lib/utils/supabase/client";
 
 import { ArenaVisits } from "@/components/shared/arena-visits";
 import { Button } from "@/components/ui/button";
@@ -9,6 +8,7 @@ import { ChevronDownIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { GameCards } from "@/components/shared/game-card";
 import { NoGamesMessage } from "@/components/shared/no-data";
+import { PageHeader } from "@/components/shared/page-header";
 import {
   Popover,
   PopoverContent,
@@ -271,71 +271,74 @@ export default function PageClient({ user }: { user: any }) {
   }
   
   return (
-    // TODO: fix typing w/r/t to venueType
-    <div className="flex flex-row gap-3 p-3">
-      <div className="flex flex-col gap-3 p-3 w-70">
-        <SportSelect onChange={handleLeagueChange} />
-        <hr className="my-4 border-gray-300" />
-        <VisitKpi seenAttribute="Games" numberSeen={distinctGames} isLoading={isGamesLoading} />
-        <VisitKpi seenAttribute="Teams" numberSeen={distinctTeams} isLoading={isGamesLoading} />
-        <VisitKpi seenAttribute={venueType} numberSeen={distinctArenas} isLoading={isGamesLoading} />
-        <hr className="my-4 border-gray-300" />
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              id="date"
-              className="justify-between font-normal"
-            >
-              {date ? date.toISOString().split('T')[0] : "Select date"}
-              <ChevronDownIcon />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-            <Calendar
-              mode="single"
-              selected={date}
-              captionLayout="dropdown"
-              onSelect={(date) => {
-                setDate(date)
-                setOpen(false)
-              }}
-            />
-          </PopoverContent>
-        </Popover>
-        <TeamInput homeOrAway="Home" setTeam={setHomeTeam} />
-        <TeamInput homeOrAway="Away" setTeam={setAwayTeam} />
-        <Button onClick={submitGame} disabled={!date || !inputHomeTeam || !inputAwayTeam}>Submit Game</Button>
-      </div>
-      <div className="flex flex-col gap-3 w-150">
-        {isTeamRecordsLoading ? 
-          <Skeleton className="w-full h-full" />
-        : haveSeenGamesForLeague ? 
-        (
-          <GameCards gamesData={games} onDelete={handleDelete} />
-        ) : (
-            <NoGamesMessage infoText="No game log data for this league" />
-        )}
-      </div>
-      <div className="w-100">
-        {isTeamRecordsLoading ? 
-          <Skeleton className="w-full h-full" />
-        : haveSeenGamesForLeague ? 
-        (
-          <TeamRecords recordsData={records} /> 
-        ) : (
-          <NoGamesMessage infoText="No team record data for this league" />
-        )}
-      </div>
-      <div className="w-100">
-        {isArenasLoading ?
-          <Skeleton className="w-full h-full" />
-        : haveSeenGamesForLeague ? 
-        ( 
-          <ArenaVisits arenasData={arenas} venueType={venueType} />
-        ) : (
-          <NoGamesMessage infoText={`No ${venueType.toLowerCase()} visit data for this league`} />
-        )}
+    // TODO: fix typing w/r/t venueType
+    <div>
+      <PageHeader user={user} />
+      <div className="flex flex-row gap-3 p-3">
+        <div className="flex flex-col gap-3 p-3 w-70">
+          <SportSelect onChange={handleLeagueChange} />
+          <hr className="my-4 border-gray-300" />
+          <VisitKpi seenAttribute="Games" numberSeen={distinctGames} isLoading={isGamesLoading} />
+          <VisitKpi seenAttribute="Teams" numberSeen={distinctTeams} isLoading={isGamesLoading} />
+          <VisitKpi seenAttribute={venueType} numberSeen={distinctArenas} isLoading={isGamesLoading} />
+          <hr className="my-4 border-gray-300" />
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                id="date"
+                className="justify-between font-normal"
+              >
+                {date ? date.toISOString().split('T')[0] : "Select date"}
+                <ChevronDownIcon />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={date}
+                captionLayout="dropdown"
+                onSelect={(date) => {
+                  setDate(date)
+                  setOpen(false)
+                }}
+              />
+            </PopoverContent>
+          </Popover>
+          <TeamInput homeOrAway="Home" setTeam={setHomeTeam} />
+          <TeamInput homeOrAway="Away" setTeam={setAwayTeam} />
+          <Button onClick={submitGame} disabled={!date || !inputHomeTeam || !inputAwayTeam}>Submit Game</Button>
+        </div>
+        <div className="flex flex-col gap-3 w-150">
+          {isTeamRecordsLoading ? 
+            <Skeleton className="w-full h-full" />
+          : haveSeenGamesForLeague ? 
+          (
+            <GameCards gamesData={games} onDelete={handleDelete} />
+          ) : (
+              <NoGamesMessage infoText="No game log data for this league" />
+          )}
+        </div>
+        <div className="w-100">
+          {isTeamRecordsLoading ? 
+            <Skeleton className="w-full h-full" />
+          : haveSeenGamesForLeague ? 
+          (
+            <TeamRecords recordsData={records} /> 
+          ) : (
+            <NoGamesMessage infoText="No team record data for this league" />
+          )}
+        </div>
+        <div className="w-100">
+          {isArenasLoading ?
+            <Skeleton className="w-full h-full" />
+          : haveSeenGamesForLeague ? 
+          ( 
+            <ArenaVisits arenasData={arenas} venueType={venueType} />
+          ) : (
+            <NoGamesMessage infoText={`No ${venueType.toLowerCase()} visit data for this league`} />
+          )}
+        </div>
       </div>
     </div>
   );
