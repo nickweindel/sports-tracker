@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     const response = await fetch(`${API_BASE}/${sport}/${league}/${API_PATH}?dates=${date}`);
     
     if (!response.ok) {
-      throw new Error(`NBA API responded with status: ${response.status}`);
+      throw new Error(`${league} API responded with status: ${response.status}`);
     }
 
     const data = await response.json();
@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error(`Error fetching ${league} data:`, error);
     return NextResponse.json(
-      { error: 'Failed to fetch NBA data' },
+      { error: `Failed to fetch ${league} data` },
       { status: 500 }
     )
   }
