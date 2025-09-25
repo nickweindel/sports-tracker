@@ -1,43 +1,70 @@
 # Sports Game Tracker
 
-A web application built with **Next.js**, **PostgreSQL**, and **ShadCN UI**, designed to track sports games across different leagues and venues. Users can view, add, and delete game data, as well as analyze venue and team stats.
+A web application built with **Next.js**, **Supabase**, and **ShadCN UI** and deployed with **Vercel**, designed to track sports games across different leagues and venues. Users can view, add, and delete game data, as well as analyze venue and team stats.
 
 ---
 
 ## Tech Stack
 
 - **Frontend**: [Next.js](https://nextjs.org/) with [ShadCN UI](https://ui.shadcn.com/) and [Lucide Icons](https://lucide.dev/)
-- **Database**: PostgreSQL (local via Docker)
+- **Database**: [Supabase](https://supabase.com/)
 - **Package Manager**: [pnpm](https://pnpm.io/)
 - **Icons**: Lucide + league logos in `/public/league-logos`
+- **Deployment**: [Vercel](https://vercel.com/)
 
 ---
 
 ## Database Schema
 
 ```sql
-CREATE TABLE IF NOT EXISTS games (
-    game_id INTEGER NOT NULL,
-    league TEXT NOT NULL, 
-    game_date DATE NOT NULL,
-    home_team TEXT NOT NULL,
-    home_team_name TEXT NOT NULL,
-    home_team_score INTEGER NOT NULL,
-    home_team_logo TEXT NOT NULL,
-    home_team_rank TEXT NULL,
-    away_team TEXT NOT NULL,
-    away_team_name TEXT NOT NULL,
-    away_team_score INTEGER NOT NULL,
-    away_team_logo TEXT NOT NULL,
-    away_team_rank TEXT NULL,
-    game_center_link TEXT,
-    arena TEXT NOT NULL,
-    arena_city TEXT NOT NULL,
-    arena_state TEXT NOT NULL,
-    arena_country TEXT NOT NULL,
-    PRIMARY KEY (game_id, league, game_date, home_team, away_team)
-);
+create table public.games (
+  user_email text not null,
+  game_id integer not null,
+  league text not null,
+  game_date date not null,
+  home_team text not null,
+  home_team_name text not null,
+  home_team_score integer not null,
+  home_team_logo text not null,
+  home_team_rank integer null,
+  away_team text not null,
+  away_team_name text not null,
+  away_team_score integer not null,
+  away_team_logo text not null,
+  away_team_rank integer null,
+  game_center_link text null,
+  arena text not null,
+  arena_city text null,
+  arena_state text null,
+  arena_country text null,
+  constraint games_pkey primary key (
+    user_email,
+    game_id,
+    league,
+    game_date,
+    home_team,
+    away_team
+  )
+)
+
+create table public.rank_override (
+  game_id integer not null,
+  league text not null,
+  home_team_rank integer null,
+  away_team_rank integer null,
+  constraint rank_override_pkey primary key (game_id, league)
+)
+
+create table public.team_override (
+  league text not null,
+  team_abbreviation text not null,
+  team_abbreviation_override text null,
+  team_logo text null,
+  constraint team_override_pkey primary key (league, team_abbreviation)
+)
 ```
+
+Rank override handles college sports games where one or more teams has the incorrect ranking. Team override is a way to handle teams that have relocated or have different abbreviations to ensure consistency in logos and abbreviations. Long-term, this should be handled in a more elegant way, such as using a team ID. An example is the Oakland Athletics. Their old logo, `oak.png` is not found anymore on ESPN's website, so it needs to be hardcoded to `ath.png`.
 
 ---
 
@@ -54,19 +81,19 @@ CREATE TABLE IF NOT EXISTS games (
 │   │   │   ├── arenas/route.ts              # Gets game counts per arena/stadium
 │   │   │   ├── games/route.ts               # GET, POST, DELETE games
 │   │   │   └── teams/route.ts               # Team-specific game stats
+|   |   ├── auth/             # Pages for performing auth actions (change password, login, etc.)
 │   │   ├── page.tsx          # The only page in the app
 │   │   ├── layout.tsx
 │   │   └── globals.css
 │   ├── components/
+|   |   ├── auth/             # Auth components used in auth pages
 │   │   ├── shared/           # Custom reusable components
 │   │   └── ui/               # ShadCN components
 │   ├── lib/
+|   |   ├── supabase          # Supabase client, server, and middleware utilities
 │   │   ├── constants.ts
-│   │   ├── db.ts             # DB connection/config
 │   │   └── utils.ts
 │   └── types/                # TypeScript types (arena, game, etc.)
-├── init.sql                  # SQL schema (optional for setup)
-├── test-db.js                # Utility to test DB connection
 ├── package.json
 ├── pnpm-lock.yaml
 └── README.md
@@ -78,7 +105,6 @@ CREATE TABLE IF NOT EXISTS games (
 
 - [Node.js](https://nodejs.org/) (v18+ recommended)
 - [pnpm](https://pnpm.io/)
-- [Docker](https://www.docker.com/) (for PostgreSQL)
 
 ### Setup
 
@@ -88,27 +114,17 @@ CREATE TABLE IF NOT EXISTS games (
    cd project-name
    ```
 
-2. **Start the PostgreSQL container**
-   ```bash
-   docker run --name project-db -e POSTGRES_PASSWORD=yourpassword -p 5432:5432 -d postgres
-   ```
-
-3. **Initialize the database**
-   ```bash
-   psql -h localhost -U postgres -d postgres -f init.sql
-   ```
-
-4. **Install dependencies**
+2. **Install dependencies**
    ```bash
    pnpm install
    ```
 
-5. **Run the development server**
+3. **Run the development server**
    ```bash
    pnpm dev
    ```
 
-6. **Open the app in your browser**
+4. **Open the app in your browser**
    http://localhost:3000
 
 
@@ -148,8 +164,6 @@ CREATE TABLE IF NOT EXISTS games (
 
 ## TODOs / Improvements
 
-- [ ] Deploy to a real web service
-- [ ] Add authentication/login and user-specific tracking
 - [ ] Integrate automated handling of certain edge cases (e.g. relocated teams, neutral sites, etc.)
 - [ ] Create analytics (e.g. top goal scorers for NHL games, winning pitchers for MLB games, etc.)
 - [ ] Refactor game selection to require less manual input (i.e. create a dropdown of selectable games once a league is selected)

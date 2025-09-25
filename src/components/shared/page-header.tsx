@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/utils/supabase/client";
+import { createClient } from "@/lib/supabase/client";
 
 import { Badge } from "@/components/ui/badge";
 import { CircleUser } from "lucide-react";
