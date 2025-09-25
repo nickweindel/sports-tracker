@@ -9,7 +9,7 @@ interface ScoreCardProps {
 }
 
 export function ScoreCard({ score, logoSrc, logoDimensions, logoFirst, rank }: ScoreCardProps) {
-  const showRank = rank && Number(rank) !== 99;
+  const showRank = rank && rank !== 99;
 
   const textClass = "text-2xl font-bold";
   const marginClass = "ml-2";
