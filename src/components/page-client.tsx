@@ -23,7 +23,8 @@ import { VisitKpi } from "@/components/shared/visit-kpi";
 import { Arena } from "@/types/arena"
 import { Game } from "@/types/game";
 import { League } from "@/types/league";
-import { TeamRecord } from "@/types/team-record";
+import { LinkType } from "@/types/link";
+import { TeamRecord, TeamType } from "@/types/team";
 
 import { LEAGUE_TO_SPORT_MAPPING } from "@/lib/constants";
 import { LEAGUE_TO_VENUE_TYPE_MAPPING } from "@/lib/constants";
@@ -187,8 +188,8 @@ export default function PageClient({ user }: { user: any }) {
         
         const gameId = filteredGame[0].id;
         const gameData = filteredGame[0].competitions[0];
-        const homeTeamData = gameData.competitors.find(team => team.homeAway === "home"); // TODO: fix typing
-        const awayTeamData = gameData.competitors.find(team => team.homeAway === "away"); // TODO: fix typing
+        const homeTeamData = gameData.competitors.find((team: TeamType) => team.homeAway === "home");
+        const awayTeamData = gameData.competitors.find((team: TeamType) => team.homeAway === "away"); 
 
         // Check that we have the home and away teams correct.
         const homeTeamAbbreviation = homeTeamData.team.abbreviation;
@@ -212,8 +213,8 @@ export default function PageClient({ user }: { user: any }) {
         const awayTeamRank = awayTeamData.curatedRank?.current ?? null;
 
         // Recap/box score link.
-        const recapLink = filteredGame[0].links.find(link => link.text === "Recap")?.href
-          || filteredGame[0].links.find(link => link.text === "Box Score")?.href;
+        const recapLink = filteredGame[0].links.find((link: LinkType) => link.text === "Recap")?.href
+          || filteredGame[0].links.find((link: LinkType) => link.text === "Box Score")?.href;
 
         // Venue info.
         const venueData = gameData.venue;
@@ -271,7 +272,6 @@ export default function PageClient({ user }: { user: any }) {
   }
   
   return (
-    // TODO: fix typing w/r/t venueType
     <div>
       <PageHeader user={user} />
       <div className="flex flex-row gap-3 p-3">
@@ -280,7 +280,7 @@ export default function PageClient({ user }: { user: any }) {
           <hr className="my-4 border-gray-300" />
           <VisitKpi seenAttribute="Games" numberSeen={distinctGames} isLoading={isGamesLoading} />
           <VisitKpi seenAttribute="Teams" numberSeen={distinctTeams} isLoading={isGamesLoading} />
-          <VisitKpi seenAttribute={venueType} numberSeen={distinctArenas} isLoading={isGamesLoading} />
+          <VisitKpi seenAttribute={String(venueType)} numberSeen={distinctArenas} isLoading={isGamesLoading} />
           <hr className="my-4 border-gray-300" />
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
@@ -334,9 +334,9 @@ export default function PageClient({ user }: { user: any }) {
             <Skeleton className="w-full h-full" />
           : haveSeenGamesForLeague ? 
           ( 
-            <ArenaVisits arenasData={arenas} venueType={venueType} />
+            <ArenaVisits arenasData={arenas} venueType={String(venueType)} />
           ) : (
-            <NoGamesMessage infoText={`No ${venueType.toLowerCase()} visit data for this league`} />
+            <NoGamesMessage infoText={`No ${String(venueType).toLowerCase()} visit data for this league`} />
           )}
         </div>
       </div>

@@ -9,3 +9,7 @@ export interface TeamRecord {
     overall_wins: number;
     overall_losses: number;
 }
+
+export interface TeamType {
+    homeAway: "home" | "away";
+}
