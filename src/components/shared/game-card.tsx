@@ -29,7 +29,8 @@ export function GameCards({gamesData, onDelete} : GameCardsProps) {
                 <Card key={index}>
                     <CardHeader className="font-semibold text-center">
                         <CardTitle>
-                            {new Date(game.game_date).toLocaleDateString('en-US', {
+                            {/* TODO: do this more elegantly */ }
+                            {new Date(game.game_date + 'T00:00:00').toLocaleDateString('en-US', {
                                 year: 'numeric',
                                 month: 'long',
                                 day: 'numeric'
