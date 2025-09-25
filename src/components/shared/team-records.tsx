@@ -18,7 +18,7 @@ import {
 
 import { LEAGUE_TIES_ALLOWED } from "@/lib/constants";
 
-import { TeamRecord } from "@/types/team-record";
+import { TeamRecord } from "@/types/team";
 
 import numeral from "numeral";
 
