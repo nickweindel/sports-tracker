@@ -17,5 +17,6 @@ export interface Game {
   arena: string;
   arena_city: string;
   arena_state: string;
-  arena_country: string
+  arena_country: string;
+  neutral_site: string;
 }
