@@ -217,6 +217,7 @@ export default function PageClient({ user }: { user: any }) {
           || filteredGame[0].links.find((link: LinkType) => link.text === "Box Score")?.href;
 
         // Venue info.
+        const neutralSite = gameData.neutralSite;
         const venueData = gameData.venue;
         const venue = venueData.fullName;
 
@@ -246,6 +247,7 @@ export default function PageClient({ user }: { user: any }) {
             arena_city: venueCity,
             arena_state: venueState,
             arena_country: venueCountry,
+            neutral_site: neutralSite,
           }
 
            // POST this to our DB

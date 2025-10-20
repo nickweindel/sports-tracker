@@ -15,6 +15,7 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select";
+import { NoGamesMessage } from "@/components/shared/no-data";
 
 import { LEAGUE_TIES_ALLOWED } from "@/lib/constants";
 
@@ -77,6 +78,7 @@ export function TeamRecords({recordsData} : TeamRecordProps) {
                     <SelectItem value="overall">Overall</SelectItem>
                     <SelectItem value="home">Home</SelectItem>
                     <SelectItem value="away">Away</SelectItem>
+                    <SelectItem value="neutral">Neutral</SelectItem>
                 </SelectContent>
             </Select>
             <Card>
@@ -87,37 +89,46 @@ export function TeamRecords({recordsData} : TeamRecordProps) {
                 </CardHeader>
                 <CardContent>
                     <div className="space-y-2">
-                        {sortedTeams.map((team) => {
-                            const wins = team[`${recordDimension}_wins` as keyof TeamRecord] as number;
-                            const losses = team[`${recordDimension}_losses` as keyof TeamRecord] as number;
-                            const ties = team[`${recordDimension}_ties` as keyof TeamRecord] as number;
-                            const winningPercentage = team.winningPercentage;
-                            const formattedWinningPercentage = numeral(winningPercentage / 10).format('0.000');
-                            const isTiesAllowed = LEAGUE_TIES_ALLOWED[team.league];
-                            
-                            return (
-                                <Card key={team.team}>
-                                    <CardContent className="flex items-center justify-between m-2">
-                                        <div className="flex items-center gap-2">
-                                            <img 
-                                                src={team.team_logo} 
-                                                width={logoDimensions} 
-                                                height={logoDimensions} />
-                                            <span className="font-medium">{team.team}</span>
-                                        </div>
-                                        <div className="flex items-center gap-4 text-sm">
-                                            <span>
-                                                {Number(wins)}W - {Number(losses)}L
-                                                {isTiesAllowed && ` - ${Number(ties)}T`}
-                                            </span>
-                                            <span className="font-bold">
-                                                {formattedWinningPercentage}
-                                            </span>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            );
-                        })}
+                        {sortedTeams.length > 0 ? (
+                            <>
+                                {sortedTeams.map((team) => {
+                                    const wins = team[`${recordDimension}_wins` as keyof TeamRecord] as number;
+                                    const losses = team[`${recordDimension}_losses` as keyof TeamRecord] as number;
+                                    const ties = team[`${recordDimension}_ties` as keyof TeamRecord] as number;
+                                    const winningPercentage = team.winningPercentage;
+                                    const formattedWinningPercentage = numeral(winningPercentage / 10).format('0.000');
+                                    const isTiesAllowed = LEAGUE_TIES_ALLOWED[team.league];
+                                    
+                                    return (
+                                        <Card key={team.team}>
+                                            <CardContent className="flex items-center justify-between m-2">
+                                                <div className="flex items-center gap-2">
+                                                    <img 
+                                                        src={team.team_logo} 
+                                                        width={logoDimensions} 
+                                                        height={logoDimensions} />
+                                                    <span className="font-medium">{team.team}</span>
+                                                </div>
+                                                <div className="flex items-center gap-4 text-sm">
+                                                    <span>
+                                                        {Number(wins)}W - {Number(losses)}L
+                                                        {isTiesAllowed && ` - ${Number(ties)}T`}
+                                                    </span>
+                                                    <span className="font-bold">
+                                                        {formattedWinningPercentage}
+                                                    </span>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    );
+                                })}
+                            </>
+                            ) :
+                            (
+                                <>
+                                    <NoGamesMessage infoText="" noGameTypeRecord={recordDimension} /> 
+                                </>
+                            )}
                     </div>
                 </CardContent>
             </Card>
