@@ -139,7 +139,7 @@ Rank override handles college sports games where one or more teams has the incor
 | `/api/games`                | DELETE | Delete a game                         |
 | `/api/arenas`               | GET    | Get count of games per arena          |
 | `/api/teams`                | GET    | Fetch a team's record                 |
-| `/api/[sports]/[league]`    | POST   | Insert league-specific game data      |
+| `/api/[sports]/[league]`    | GET    | Get league-specific game data         |
 
 
 ---
