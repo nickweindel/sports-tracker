@@ -34,8 +34,9 @@ export default function PageClient({ user }: { user: any }) {
   const [selectedLeague, setSelectedLeague] = useState<string>("mlb");
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date | undefined>(undefined);
-  const [inputHomeTeam, setHomeTeam] = useState<string>("");
-  const [inputAwayTeam, setAwayTeam] = useState<string>("");
+  const [selectedGame, setSelectedGame] = useState<string | undefined>();
+  const [inputHomeTeam, setHomeTeam] = useState<string>(""); // TODO: rename this state variable
+  const [inputAwayTeam, setAwayTeam] = useState<string>(""); // TODO: rename this state variable
   const [games, setGames] = useState<Game[]>([]);
   const [records, setRecords] = useState<TeamRecord[]>([]);
   const [arenas, setArenas] = useState<Arena[]>([]);
@@ -55,7 +56,10 @@ export default function PageClient({ user }: { user: any }) {
   // Function to handle changing the league.
   const handleLeagueChange = (value: string) => {
     setSelectedLeague(value);
+
+    // Reset everything when league changes.
     setDate(undefined);
+    setSelectedGame(undefined);
     setHomeTeam("");
     setAwayTeam("");
   }
@@ -327,7 +331,13 @@ export default function PageClient({ user }: { user: any }) {
               />
             </PopoverContent>
           </Popover>
-          <GameSelect selectOptions={selectOptions} setHomeTeam={setHomeTeam} setAwayTeam={setAwayTeam} isDateSelected={date !== undefined} />
+          <GameSelect 
+            selectOptions={selectOptions} 
+            setHomeTeam={setHomeTeam} 
+            setAwayTeam={setAwayTeam} 
+            isDateSelected={date !== undefined}
+            selectedGame={selectedGame}
+            setSelectedGame={setSelectedGame} />
           <Button onClick={submitGame} disabled={!date || !inputHomeTeam || !inputAwayTeam}>Submit Game</Button>
         </div>
         <div className="flex flex-col gap-3 w-150">

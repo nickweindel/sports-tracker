@@ -8,17 +8,22 @@ import {
 
 import { SelectOption } from "@/types/generic";
 
-interface TeamInputProps {
+interface GameSelectProps {
   selectOptions: SelectOption[];
   setHomeTeam: (team: string) => void;
   setAwayTeam: (team: string) => void;
   isDateSelected: boolean;
+  selectedGame: string | undefined;
+  setSelectedGame: (value: string | undefined) => void;
 }
 
-export const GameSelect = ({ selectOptions, setHomeTeam, setAwayTeam, isDateSelected }: TeamInputProps) => {
+export const GameSelect = ({ selectOptions, setHomeTeam, setAwayTeam, isDateSelected, selectedGame, setSelectedGame }: GameSelectProps) => {
+  console.log(selectedGame);
   return (
     <Select
+      value={selectedGame}
       onValueChange={(value) => {
+        setSelectedGame(value);
         const [away, home] = value
           .trim()                // remove leading/trailing whitespace
           .split("@")
@@ -27,8 +32,10 @@ export const GameSelect = ({ selectOptions, setHomeTeam, setAwayTeam, isDateSele
         setAwayTeam(away);
       }}
     >
-      <SelectTrigger disabled={!isDateSelected} className="w-full">
-        <SelectValue placeholder={isDateSelected ? "Select a game" : "Select a date"} />
+      <SelectTrigger disabled={!isDateSelected || selectOptions.length === 0} className="w-full">
+        <SelectValue placeholder={!isDateSelected ? "Select a date first"
+                                  : selectOptions.length === 0 ? "No events for this date" : "Select a game"}
+        />
       </SelectTrigger>
 
       <SelectContent>
