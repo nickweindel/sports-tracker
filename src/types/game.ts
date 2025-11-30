@@ -20,3 +20,12 @@ export interface Game {
   arena_country: string;
   neutral_site: string;
 }
+
+export interface Event {
+  name: string;
+  shortName: string;
+}
+
+export interface EventList {
+  events: Event[];
+}
