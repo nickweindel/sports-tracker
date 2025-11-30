@@ -132,7 +132,7 @@ Rank override handles college sports games where one or more teams has the incor
 
 ## API Routes
 
-| Route                        | Method | Description                           |
+| Route                        | Method | Description                          |
 |-----------------------------|--------|---------------------------------------|
 | `/api/games`                | GET    | Fetch all game records                |
 | `/api/games`                | POST   | Add a new game                        |
@@ -140,6 +140,7 @@ Rank override handles college sports games where one or more teams has the incor
 | `/api/arenas`               | GET    | Get count of games per arena          |
 | `/api/teams`                | GET    | Fetch a team's record                 |
 | `/api/[sports]/[league]`    | GET    | Get league-specific game data         |
+| `/api/[sports]/[league]/events`| GET | Get all events for a specific league  |
 
 
 ---
@@ -166,5 +167,4 @@ Rank override handles college sports games where one or more teams has the incor
 
 - [ ] Integrate automated handling of certain edge cases (e.g. relocated teams, neutral sites, etc.)
 - [ ] Create analytics (e.g. top goal scorers for NHL games, winning pitchers for MLB games, etc.)
-- [ ] Refactor game selection to require less manual input (i.e. create a dropdown of selectable games once a league is selected)
 - [ ] Allow ability to share games attended with others (i.e. have a view-only mode)
