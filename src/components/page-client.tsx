@@ -54,7 +54,10 @@ export default function PageClient({ user }: { user: any }) {
 
   // Function to handle changing the league.
   const handleLeagueChange = (value: string) => {
-    setSelectedLeague(value)
+    setSelectedLeague(value);
+    setDate(undefined);
+    setHomeTeam("");
+    setAwayTeam("");
   }
 
   // Handle selecting a date -- set the date and fetch events for that date.
@@ -97,7 +100,7 @@ export default function PageClient({ user }: { user: any }) {
   // Fetch games on page load
   useEffect(() => {
     fetchGames()
-  }, [selectedLeague])
+  }, [selectedLeague]);
 
   // Calculate distinct counts for KPIs
   const distinctGames = games.length;
