@@ -15,10 +15,17 @@ interface GameSelectProps {
   isDateSelected: boolean;
   selectedGame: string | undefined;
   setSelectedGame: (value: string | undefined) => void;
+  isFetching: boolean;
 }
 
-export const GameSelect = ({ selectOptions, setHomeTeam, setAwayTeam, isDateSelected, selectedGame, setSelectedGame }: GameSelectProps) => {
-  console.log(selectedGame);
+export const GameSelect = ({ 
+  selectOptions, 
+  setHomeTeam, 
+  setAwayTeam, 
+  isDateSelected, 
+  selectedGame, 
+  setSelectedGame, 
+  isFetching }: GameSelectProps) => {
   return (
     <Select
       value={selectedGame}
@@ -33,8 +40,13 @@ export const GameSelect = ({ selectOptions, setHomeTeam, setAwayTeam, isDateSele
       }}
     >
       <SelectTrigger disabled={!isDateSelected || selectOptions.length === 0} className="w-full">
-        <SelectValue placeholder={!isDateSelected ? "Select a date first"
-                                  : selectOptions.length === 0 ? "No events for this date" : "Select a game"}
+        <SelectValue placeholder={!isDateSelected
+                                  ? "Select a date first"
+                                  : selectOptions.length === 0
+                                    ? "No events for this date"
+                                    : isFetching
+                                      ? "Fetching games..."
+                                      : "Select a game"}
         />
       </SelectTrigger>
 

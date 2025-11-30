@@ -46,6 +46,7 @@ export default function PageClient({ user }: { user: any }) {
   const [isGamesLoading, setIsGamesLoading] = useState<boolean>(true);
   const [isTeamRecordsLoading, setIsTeamRecordsLoading] = useState<boolean>(true);
   const [isArenasLoading, setIsArenasLoading] = useState<boolean>(true);
+  const [isFetching, setIsFetching] = useState<boolean>(false); // fetching status for games selector
 
   // Constant to see if we've seen any games.
   const haveSeenGamesForLeague = games.length > 0;
@@ -59,7 +60,7 @@ export default function PageClient({ user }: { user: any }) {
 
     // Reset everything when league changes.
     setDate(undefined);
-    setSelectedGame(undefined);
+    setSelectedGame("");
     setHomeTeam("");
     setAwayTeam("");
   }
@@ -74,12 +75,15 @@ export default function PageClient({ user }: { user: any }) {
 
     const sport = LEAGUE_TO_SPORT_MAPPING[selectedLeague as League];
 
+    setIsFetching(true);
     const eventData = await fetch(`api/${sport}/${selectedLeague}/events?date=${formattedDate}`);
 
     if (eventData.ok) {
       const data = await eventData.json();
       setSelectOptions(data.options);
     }
+
+    setIsFetching(false);
   }
 
   // Function to fetch all games from the database
@@ -337,7 +341,8 @@ export default function PageClient({ user }: { user: any }) {
             setAwayTeam={setAwayTeam} 
             isDateSelected={date !== undefined}
             selectedGame={selectedGame}
-            setSelectedGame={setSelectedGame} />
+            setSelectedGame={setSelectedGame}
+            isFetching={isFetching} />
           <Button onClick={submitGame} disabled={!date || !inputHomeTeam || !inputAwayTeam}>Submit Game</Button>
         </div>
         <div className="flex flex-col gap-3 w-150">
