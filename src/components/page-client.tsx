@@ -60,13 +60,14 @@ export default function PageClient({ user }: { user: any }) {
   // Handle selecting a date -- set the date and fetch events for that date.
   const handleSelect = async(selectedDate: Date | undefined) => {
     const date = selectedDate;
+    const formattedDate = selectedDate?.toISOString().split("T")[0].replace(/-/g, "");  
 
     setDate(date);
     setOpen(false);
 
     const sport = LEAGUE_TO_SPORT_MAPPING[selectedLeague as League];
 
-    const eventData = await fetch(`api/${sport}/${selectedLeague}/events?date=${date}`);
+    const eventData = await fetch(`api/${sport}/${selectedLeague}/events?date=${formattedDate}`);
 
     if (eventData.ok) {
       const data = await eventData.json();
@@ -323,7 +324,7 @@ export default function PageClient({ user }: { user: any }) {
               />
             </PopoverContent>
           </Popover>
-          <GameSelect selectOptions={selectOptions} setHomeTeam={setHomeTeam} setAwayTeam={setAwayTeam} />
+          <GameSelect selectOptions={selectOptions} setHomeTeam={setHomeTeam} setAwayTeam={setAwayTeam} isDateSelected={date !== undefined} />
           <Button onClick={submitGame} disabled={!date || !inputHomeTeam || !inputAwayTeam}>Submit Game</Button>
         </div>
         <div className="flex flex-col gap-3 w-150">
