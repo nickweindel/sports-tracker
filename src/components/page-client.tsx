@@ -14,7 +14,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { TeamInput } from "@/components/shared/team-input";
+import { GameSelect } from "@/components/shared/game-select";
 import { TeamRecords } from "@/components/shared/team-records";
 import { SportSelect } from "@/components/shared/sport-select";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -22,6 +22,7 @@ import { VisitKpi } from "@/components/shared/visit-kpi";
 
 import { Arena } from "@/types/arena"
 import { Game } from "@/types/game";
+import { SelectOption } from "@/types/generic";
 import { League } from "@/types/league";
 import { LinkType } from "@/types/link";
 import { TeamRecord, TeamType } from "@/types/team";
@@ -38,7 +39,8 @@ export default function PageClient({ user }: { user: any }) {
   const [games, setGames] = useState<Game[]>([]);
   const [records, setRecords] = useState<TeamRecord[]>([]);
   const [arenas, setArenas] = useState<Arena[]>([]);
-
+  const [selectOptions, setSelectOptions] = useState<SelectOption[]>([]);
+  
   // Loading state variables.
   const [isGamesLoading, setIsGamesLoading] = useState<boolean>(true);
   const [isTeamRecordsLoading, setIsTeamRecordsLoading] = useState<boolean>(true);
@@ -53,6 +55,23 @@ export default function PageClient({ user }: { user: any }) {
   // Function to handle changing the league.
   const handleLeagueChange = (value: string) => {
     setSelectedLeague(value)
+  }
+
+  // Handle selecting a date -- set the date and fetch events for that date.
+  const handleSelect = async(selectedDate: Date | undefined) => {
+    const date = selectedDate;
+
+    setDate(date);
+    setOpen(false);
+
+    const sport = LEAGUE_TO_SPORT_MAPPING[selectedLeague as League];
+
+    const eventData = await fetch(`api/${sport}/${selectedLeague}/events?date=${date}`);
+
+    if (eventData.ok) {
+      const data = await eventData.json();
+      setSelectOptions(data.options);
+    }
   }
 
   // Function to fetch all games from the database
@@ -150,8 +169,6 @@ export default function PageClient({ user }: { user: any }) {
         });
 
         if (response.ok) {
-          const data = await response.json();
-
           fetchGames();
         } else {
           const errorData = await response.json();
@@ -301,14 +318,12 @@ export default function PageClient({ user }: { user: any }) {
                 selected={date}
                 captionLayout="dropdown"
                 onSelect={(date) => {
-                  setDate(date)
-                  setOpen(false)
+                  handleSelect(date);
                 }}
               />
             </PopoverContent>
           </Popover>
-          <TeamInput homeOrAway="Home" setTeam={setHomeTeam} />
-          <TeamInput homeOrAway="Away" setTeam={setAwayTeam} />
+          <GameSelect selectOptions={selectOptions} setHomeTeam={setHomeTeam} setAwayTeam={setAwayTeam} />
           <Button onClick={submitGame} disabled={!date || !inputHomeTeam || !inputAwayTeam}>Submit Game</Button>
         </div>
         <div className="flex flex-col gap-3 w-150">
