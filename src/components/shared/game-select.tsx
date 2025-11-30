@@ -25,7 +25,7 @@ export const GameSelect = ({ selectOptions, setHomeTeam, setAwayTeam, isDateSele
       onValueChange={(value) => {
         setSelectedGame(value);
         const [away, home] = value
-          .trim()                // remove leading/trailing whitespace
+          .trim()                      // remove leading/trailing whitespace
           .split("@")
           .map((team) => team.trim()); // remove whitespace around each team
         setHomeTeam(home);
