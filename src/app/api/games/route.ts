@@ -38,6 +38,7 @@ export async function GET(request: NextRequest) {
     const user = searchParams.get('user');
     const league = searchParams.get('league');
     const arena = searchParams.get('arena');
+    const team = searchParams.get('team');
 
     if (!league) {
       return NextResponse.json({ error: 'No league was specified' }, { status: 400 });
@@ -52,6 +53,10 @@ export async function GET(request: NextRequest) {
 
     if (arena) {
       query = query.eq('arena', arena);
+    }
+
+    if (team) {
+      query = query.or(`home_team.eq.${team},away_team.eq.${team}`);
     }
 
     const { data, error } = await query;

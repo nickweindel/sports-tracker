@@ -1,6 +1,5 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { HorizontalSeparator } from "@/components/shared/horizontal-separator";
 
 import { X } from "lucide-react";
 
@@ -17,7 +16,6 @@ export function ActiveFilterChip({
 }: ActiveFilterChipProps) {
   return (
     <div>
-        <HorizontalSeparator />
         <Badge
             variant="secondary"
             className="flex items-center gap-1 px-2 py-1"

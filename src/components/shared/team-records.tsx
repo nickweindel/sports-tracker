@@ -24,10 +24,11 @@ import { TeamRecord } from "@/types/team";
 import numeral from "numeral";
 
 interface TeamRecordProps {
-    recordsData: TeamRecord[]
+    recordsData: TeamRecord[];
+    onTeamSelect: (team: string) => void;
 }
 
-export function TeamRecords({recordsData} : TeamRecordProps) {
+export function TeamRecords({recordsData, onTeamSelect} : TeamRecordProps) {
     const logoDimensions = 24;
 
     const [recordDimension, setRecordDimension] = useState<string>("overall");
@@ -100,7 +101,7 @@ export function TeamRecords({recordsData} : TeamRecordProps) {
                                     const isTiesAllowed = LEAGUE_TIES_ALLOWED[team.league];
                                     
                                     return (
-                                        <Card key={team.team}>
+                                        <Card key={team.team} className="cursor-pointer" onClick={() => onTeamSelect(team.team)}>
                                             <CardContent className="flex items-center justify-between m-2">
                                                 <div className="flex items-center gap-2">
                                                     <img 

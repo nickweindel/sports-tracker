@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { ActiveFilterChip } from "@/components/shared/active-filter-chip";
 import { ArenaVisits } from "@/components/shared/arena-visits";
@@ -52,7 +52,25 @@ export default function PageClient({ user }: { user: any }) {
 
   // Optional filter fields.
   const [selectedArena, setSelectedArena] = useState<string | undefined>(undefined);
+  const [selectedTeam, setSelectedTeam] = useState<string | undefined>(undefined);
 
+  const activeFilters = useMemo(() => {
+    return [
+      {
+        key: "arena",
+        label: "Arena",
+        value: selectedArena,
+        onClear: () => setSelectedArena(undefined),
+      },
+      {
+        key: "team",
+        label: "Team",
+        value: selectedTeam,
+        onClear: () => setSelectedTeam(undefined),
+      },
+    ].filter((f) => Boolean(f.value));
+  }, [selectedArena, selectedTeam]);
+  
   // Constant to see if we've seen any games.
   const haveSeenGamesForLeague = games.length > 0;
 
@@ -69,6 +87,7 @@ export default function PageClient({ user }: { user: any }) {
     setHomeTeam("");
     setAwayTeam("");
     setSelectedArena(undefined);
+    setSelectedTeam(undefined);
   }
 
   // Handle selecting a date -- set the date and fetch events for that date.
@@ -106,6 +125,10 @@ export default function PageClient({ user }: { user: any }) {
         params.append('arena', selectedArena);
       }
 
+      if (selectedTeam) {
+        params.append('team', selectedTeam);
+      }
+
       const response = await fetch(`/api/games?${params.toString()}`);
 
       const data = await response.json();
@@ -125,7 +148,7 @@ export default function PageClient({ user }: { user: any }) {
   // Fetch games on page load
   useEffect(() => {
     fetchGames()
-  }, [selectedLeague, selectedArena]);
+  }, [selectedLeague, selectedArena, selectedTeam]);
 
   // Calculate distinct counts for KPIs
   const distinctGames = games.length;
@@ -361,8 +384,26 @@ export default function PageClient({ user }: { user: any }) {
             setSelectedGame={setSelectedGame}
             isFetching={isFetching} />
           <Button onClick={submitGame} disabled={!date || !inputHomeTeam || !inputAwayTeam}>Submit Game</Button>
-          {selectedArena && (
-            <ActiveFilterChip label="Arena" value={selectedArena} onClear={() => setSelectedArena(undefined)} />
+          {activeFilters.length > 0 && (
+            <>
+              <HorizontalSeparator />
+              <div className="flex flex-wrap gap-2 mb-4">
+                {activeFilters.map((filter) => (
+                  <ActiveFilterChip
+                    key={filter.key}
+                    label={filter.label}
+                    value={filter.value!}
+                    onClear={filter.onClear}
+                  />
+                ))}
+              </div>
+              <Button size="sm" onClick={() => {
+                setSelectedArena(undefined);
+                setSelectedTeam(undefined);
+              }}>
+                Clear all
+              </Button>
+            </>
           )}
           
         </div>
@@ -381,7 +422,7 @@ export default function PageClient({ user }: { user: any }) {
             <Skeleton className="w-full h-full" />
           : haveSeenGamesForLeague ? 
           (
-            <TeamRecords recordsData={records} /> 
+            <TeamRecords recordsData={records} onTeamSelect={setSelectedTeam}/> 
           ) : (
             <NoGamesMessage infoText="No team record data for this league" />
           )}
