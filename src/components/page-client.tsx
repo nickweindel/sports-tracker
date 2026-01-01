@@ -166,6 +166,7 @@ export default function PageClient({ user }: { user: any }) {
   const fetchTeamRecords = async() => {
     try {
       setIsTeamRecordsLoading(true);
+
       const response = await fetch(`/api/teams?user=${user}&league=${selectedLeague}`);
       const data = await response.json();
       if (response.ok) {
@@ -189,7 +190,17 @@ export default function PageClient({ user }: { user: any }) {
   const fetchArenas = async() => {
     try {
       setIsArenasLoading(true);
-      const response = await fetch(`/api/arenas?user=${user}&league=${selectedLeague}`);
+
+      const params = new URLSearchParams({
+        user,
+        league: selectedLeague,
+      });
+
+      if (selectedTeam) {
+        params.append('team', selectedTeam)
+      }
+
+      const response = await fetch(`/api/arenas?${params.toString()}`);
       const data = await response.json();
       if (response.ok) {
         const arenaData = data.arenas;
@@ -206,7 +217,7 @@ export default function PageClient({ user }: { user: any }) {
 
   useEffect(() => {
     fetchArenas()
-  }, [games, selectedLeague]);
+  }, [games, selectedLeague, selectedTeam]);
 
   // Handle delete.
   const handleDelete = async (game: Game) => {
