@@ -37,17 +37,29 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const user = searchParams.get('user');
     const league = searchParams.get('league');
+    const arena = searchParams.get('arena');
+    const team = searchParams.get('team');
 
     if (!league) {
       return NextResponse.json({ error: 'No league was specified' }, { status: 400 });
     }
 
-    const { data, error } = await supabase
+    let query = supabase
       .from('vw_games')
       .select('*')
       .eq('league', league)
       .eq('user_email', user)
       .order('game_date', { ascending: false });
+
+    if (arena) {
+      query = query.eq('arena', arena);
+    }
+
+    if (team) {
+      query = query.or(`home_team.eq.${team},away_team.eq.${team}`);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       console.error('Supabase fetch error:', error);

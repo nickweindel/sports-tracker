@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const league = searchParams.get('league');
     const user = searchParams.get('user');
+    const team = searchParams.get('team');
 
     if (!league) {
       return NextResponse.json(
@@ -17,8 +18,9 @@ export async function GET(request: NextRequest) {
     }
 
     const { data, error } = await supabase
-    .from('arenas')
-    .select('*')
+    .rpc('arenas', {
+      team: team || null,
+    })
     .eq('league', league)
     .eq('user_email', user)
 
