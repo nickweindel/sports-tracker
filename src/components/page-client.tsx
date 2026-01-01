@@ -167,7 +167,17 @@ export default function PageClient({ user }: { user: any }) {
     try {
       setIsTeamRecordsLoading(true);
 
-      const response = await fetch(`/api/teams?user=${user}&league=${selectedLeague}`);
+      const params = new URLSearchParams({
+        user,
+        league: selectedLeague,
+      });
+
+      if (selectedArena) {
+        params.append('arena', selectedArena)
+      }
+
+      console.log(`/api/teams?${params.toString()}`)
+      const response = await fetch(`/api/teams?${params.toString()}`);
       const data = await response.json();
       if (response.ok) {
         const teamRecordData = data.teamRecords
