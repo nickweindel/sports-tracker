@@ -25,10 +25,11 @@ import numeral from "numeral";
 
 interface TeamRecordProps {
     recordsData: TeamRecord[];
-    onTeamSelect: (team: string) => void;
+    selectedTeam?: string;
+    onTeamSelect: (team?: string) => void;
 }
 
-export function TeamRecords({recordsData, onTeamSelect} : TeamRecordProps) {
+export function TeamRecords({recordsData, selectedTeam, onTeamSelect} : TeamRecordProps) {
     const logoDimensions = 24;
 
     const [recordDimension, setRecordDimension] = useState<string>("overall");
@@ -99,9 +100,18 @@ export function TeamRecords({recordsData, onTeamSelect} : TeamRecordProps) {
                                     const winningPercentage = team.winningPercentage;
                                     const formattedWinningPercentage = numeral(winningPercentage / 10).format('0.000');
                                     const isTiesAllowed = LEAGUE_TIES_ALLOWED[team.league];
+
+                                    // Conditional logic to see if we should highlight a team's card.
+                                    const isSelected = selectedTeam === team.team;
                                     
                                     return (
-                                        <Card key={team.team} className="cursor-pointer" onClick={() => onTeamSelect(team.team)}>
+                                        <Card 
+                                            key={team.team}   
+                                            className={`
+                                                cursor-pointer transition-colors
+                                                ${isSelected ? "bg-primary/5" : "hover:bg-muted"}
+                                            `} 
+                                            onClick={() => onTeamSelect(isSelected ? undefined : team.team)}>
                                             <CardContent className="flex items-center justify-between m-2">
                                                 <div className="flex items-center gap-2">
                                                     <img 

@@ -422,7 +422,7 @@ export default function PageClient({ user }: { user: any }) {
             <Skeleton className="w-full h-full" />
           : haveSeenGamesForLeague ? 
           (
-            <TeamRecords recordsData={records} onTeamSelect={setSelectedTeam}/> 
+            <TeamRecords recordsData={records} selectedTeam={selectedTeam} onTeamSelect={setSelectedTeam}/> 
           ) : (
             <NoGamesMessage infoText="No team record data for this league" />
           )}
@@ -432,7 +432,7 @@ export default function PageClient({ user }: { user: any }) {
             <Skeleton className="w-full h-full" />
           : haveSeenGamesForLeague ? 
           ( 
-            <ArenaVisits arenasData={arenas} venueType={String(venueType)} onArenaSelect={setSelectedArena} />
+            <ArenaVisits arenasData={arenas} venueType={String(venueType)} selectedArena={selectedArena} onArenaSelect={setSelectedArena} />
           ) : (
             <NoGamesMessage infoText={`No ${String(venueType).toLowerCase()} visit data for this league`} />
           )}

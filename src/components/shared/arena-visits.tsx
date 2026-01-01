@@ -11,10 +11,11 @@ import { Arena } from "@/types/arena";
 interface ArenaVisitsProps {
     arenasData: Arena[] 
     venueType: string;
-    onArenaSelect: (arena: string) => void;
+    selectedArena?: string;
+    onArenaSelect: (arena?: string) => void;
 }
 
-export function ArenaVisits({ arenasData, venueType, onArenaSelect } : ArenaVisitsProps) {
+export function ArenaVisits({ arenasData, selectedArena, venueType, onArenaSelect } : ArenaVisitsProps) {
     // Calculate arena visits and sort them
     const sortedArenas = arenasData.sort((a, b) => b.visits - a.visits);
 
@@ -29,7 +30,13 @@ export function ArenaVisits({ arenasData, venueType, onArenaSelect } : ArenaVisi
                         <div className="space-y-2 w-full">
                             {sortedArenas.map((arena) => {
                                 return (
-                                    <Card key={arena.arena} onClick={() => onArenaSelect(arena.arena)} className="cursor-pointer">
+                                    <Card 
+                                        key={arena.arena} 
+                                        onClick={() => onArenaSelect(selectedArena === arena.arena ? undefined : arena.arena)} 
+                                        className={`
+                                            cursor-pointer transition-colors
+                                            ${selectedArena === arena.arena ? "bg-primary/5" : "hover:bg-muted"}
+                                        `} >
                                         <CardContent className="flex items-center justify-between m-2">
                                             <div className="font-medium">{arena.arena}</div>
                                             <div className="font-bold">{arena.visits}</div>
