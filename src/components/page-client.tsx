@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from "react";
 
+import { ActiveFilterChip } from "@/components/shared/active-filter-chip";
 import { ArenaVisits } from "@/components/shared/arena-visits";
 import { Button } from "@/components/ui/button";
 import { ChevronDownIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { GameCards } from "@/components/shared/game-card";
+import { HorizontalSeparator } from "@/components/shared/horizontal-separator";
 import { NoGamesMessage } from "@/components/shared/no-data";
 import { PageHeader } from "@/components/shared/page-header";
 import {
@@ -48,6 +50,9 @@ export default function PageClient({ user }: { user: any }) {
   const [isArenasLoading, setIsArenasLoading] = useState<boolean>(true);
   const [isFetching, setIsFetching] = useState<boolean>(false); // fetching status for games selector
 
+  // Optional filter fields.
+  const [selectedArena, setSelectedArena] = useState<string | undefined>(undefined);
+
   // Constant to see if we've seen any games.
   const haveSeenGamesForLeague = games.length > 0;
 
@@ -63,6 +68,7 @@ export default function PageClient({ user }: { user: any }) {
     setSelectedGame("");
     setHomeTeam("");
     setAwayTeam("");
+    setSelectedArena(undefined);
   }
 
   // Handle selecting a date -- set the date and fetch events for that date.
@@ -90,7 +96,18 @@ export default function PageClient({ user }: { user: any }) {
   const fetchGames = async () => {
     try {
       setIsGamesLoading(true);
-      const response = await fetch(`/api/games?user=${user}&league=${selectedLeague}`);
+
+      const params = new URLSearchParams({
+        user,
+        league: selectedLeague,
+      });
+
+      if (selectedArena) {
+        params.append('arena', selectedArena);
+      }
+
+      const response = await fetch(`/api/games?${params.toString()}`);
+
       const data = await response.json();
       if (response.ok) {
         const gameData = data.games;
@@ -108,7 +125,7 @@ export default function PageClient({ user }: { user: any }) {
   // Fetch games on page load
   useEffect(() => {
     fetchGames()
-  }, [selectedLeague]);
+  }, [selectedLeague, selectedArena]);
 
   // Calculate distinct counts for KPIs
   const distinctGames = games.length;
@@ -308,11 +325,11 @@ export default function PageClient({ user }: { user: any }) {
       <div className="flex flex-row gap-3 p-3">
         <div className="flex flex-col gap-3 p-3 w-70">
           <SportSelect onChange={handleLeagueChange} />
-          <hr className="my-4 border-gray-300" />
+          <HorizontalSeparator />
           <VisitKpi seenAttribute="Games" numberSeen={distinctGames} isLoading={isGamesLoading} />
           <VisitKpi seenAttribute="Teams" numberSeen={distinctTeams} isLoading={isGamesLoading} />
           <VisitKpi seenAttribute={String(venueType)} numberSeen={distinctArenas} isLoading={isGamesLoading} />
-          <hr className="my-4 border-gray-300" />
+          <HorizontalSeparator />
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <Button
@@ -344,6 +361,10 @@ export default function PageClient({ user }: { user: any }) {
             setSelectedGame={setSelectedGame}
             isFetching={isFetching} />
           <Button onClick={submitGame} disabled={!date || !inputHomeTeam || !inputAwayTeam}>Submit Game</Button>
+          {selectedArena && (
+            <ActiveFilterChip label="Arena" value={selectedArena} onClear={() => setSelectedArena(undefined)} />
+          )}
+          
         </div>
         <div className="flex flex-col gap-3 w-150">
           {isTeamRecordsLoading ? 
@@ -352,7 +373,7 @@ export default function PageClient({ user }: { user: any }) {
           (
             <GameCards gamesData={games} onDelete={handleDelete} />
           ) : (
-              <NoGamesMessage infoText="No game log data for this league" />
+            <NoGamesMessage infoText="No game log data for this league" />
           )}
         </div>
         <div className="w-100">
@@ -370,7 +391,7 @@ export default function PageClient({ user }: { user: any }) {
             <Skeleton className="w-full h-full" />
           : haveSeenGamesForLeague ? 
           ( 
-            <ArenaVisits arenasData={arenas} venueType={String(venueType)} />
+            <ArenaVisits arenasData={arenas} venueType={String(venueType)} onArenaSelect={setSelectedArena} />
           ) : (
             <NoGamesMessage infoText={`No ${String(venueType).toLowerCase()} visit data for this league`} />
           )}
