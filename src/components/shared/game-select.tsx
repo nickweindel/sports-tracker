@@ -31,10 +31,18 @@ export const GameSelect = ({
       value={selectedGame}
       onValueChange={(value) => {
         setSelectedGame(value);
-        const [away, home] = value
-          .trim()                      // remove leading/trailing whitespace
-          .split("@")
-          .map((team) => team.trim()); // remove whitespace around each team
+
+        const trimmed = value.trim();
+
+        let away, home;
+
+        if (trimmed.includes("@")) {
+          [away, home] = trimmed.split("@").map(t => t.trim());
+        } else {
+          // This handles neutral site games where the game "value" uses VS instead of @
+          [away, home] = trimmed.split(/vs/i).map(t => t.trim());
+        }
+
         setHomeTeam(home);
         setAwayTeam(away);
       }}
