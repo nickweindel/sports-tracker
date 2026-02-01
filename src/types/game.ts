@@ -21,9 +21,22 @@ export interface Game {
   neutral_site: string;
 }
 
+type StatusType = {
+  type: {
+    id: string;
+    name: string;
+    state: string;
+    completed: boolean;
+    description: string;
+    detail: string;
+    shortDetail: string;
+  }
+}
+
 export interface Event {
   name: string;
   shortName: string;
+  status: StatusType;
 }
 
 export interface EventList {
