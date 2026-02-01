@@ -28,8 +28,11 @@ export async function GET(request: NextRequest) {
     // Ensure events exist
     const events = Array.isArray(data?.events) ? data.events : [];
 
+    // Only get events where the game is has gone final
+    const finalEvents = events.filter(event => event.status.type.completed === true);
+
     // Transform events → selector data
-    const selectorOptions = events.map(event => ({
+    const selectorOptions = finalEvents.map(event => ({
       value: event.shortName,
       label: event.name,
     }) as SelectOption);
