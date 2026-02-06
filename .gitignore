@@ -45,3 +45,6 @@ docker-compose.yml
 
 # notes file hosted locally
 notes.txt
+
+# supabase
+.temp
