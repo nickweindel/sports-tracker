@@ -77,10 +77,11 @@ Rank override handles college sports games where one or more teams has the incor
 ├── src/
 │   ├── app/
 │   │   ├── api/
-│   │   │   ├── [sports]/[league]/route.ts   # Main API: writes game data
-│   │   │   ├── arenas/route.ts              # Gets game counts per arena/stadium
-│   │   │   ├── games/route.ts               # GET, POST, DELETE games
-│   │   │   └── teams/route.ts               # Team-specific game stats
+│   │   │   ├── [sports]/[league]/route.ts           # Main API: writes game data
+|   |   |   ├── [sports]/[league]/events/route.ts    # Fetches games for a given league that have gone final
+│   │   │   ├── arenas/route.ts                      # Gets game counts per arena/stadium
+│   │   │   ├── games/route.ts                       # GET, POST, DELETE games
+│   │   │   └── teams/route.ts                       # Team-specific game stats
 |   |   ├── auth/             # Pages for performing auth actions (change password, login, etc.)
 │   │   ├── page.tsx          # The only page in the app
 │   │   ├── layout.tsx
