@@ -9,8 +9,8 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { ScoreCard } from "./team-score";
-import { MapPin, Trash2 } from "lucide-react";
-
+import { MapPin, Trash2, ChevronDown } from "lucide-react";
+import { useState } from "react";
 import { Game } from "@/types/game";
 
 interface GameCardsProps {
@@ -22,6 +22,15 @@ export function GameCards({gamesData, onDelete} : GameCardsProps) {
     const logoDimensions: number = 64;
     const iconDimensions: number = 18;
     const trashDimensions: number = 20;
+
+    // Track which notes are open by game index
+    const [openNotes, setOpenNotes] = useState<boolean[]>([]);
+
+    const toggleNotes = (index: number) => {
+        const newOpenNotes = [...openNotes];
+        newOpenNotes[index] = !newOpenNotes[index];
+        setOpenNotes(newOpenNotes);
+    };
 
     return (
         <>
@@ -64,6 +73,26 @@ export function GameCards({gamesData, onDelete} : GameCardsProps) {
                                 rank={game.home_team_rank} />
                          </div>
                      </CardContent>
+                     {game.notes && (
+                        <>
+                            <div
+                                onClick={() => toggleNotes(index)}
+                                className="flex items-center justify-center w-full py-2 text-sm text-gray-500 hover:text-gray-700 cursor-pointer"
+                            >
+                                <span>{openNotes[index] ? "Hide Notes" : "Show Notes"}</span>
+                                <ChevronDown
+                                    className={`ml-2 w-4 h-4 transition-transform duration-200 ease-in-out ${
+                                        openNotes[index] ? "rotate-180" : ""
+                                    }`}
+                                />
+                            </div>
+                            {openNotes[index] && (
+                                <div className="px-4 pb-4 text-sm text-gray-700 text-center border-t border-gray-100">
+                                    {game.notes}
+                                </div>
+                            )}
+                        </>
+                    )}
                      <CardFooter className="font-light text-sm flex justify-center">
                         <span className="flex flex-row">
                             {game.game_center_link && (
