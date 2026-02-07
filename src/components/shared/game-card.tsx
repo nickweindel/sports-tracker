@@ -8,10 +8,17 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger
+} from "@/components/ui/tooltip";
 import { ScoreCard } from "./team-score";
 import { MapPin, Trash2, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { Game } from "@/types/game";
+import { Button } from "@/components/ui/button";
+import { Pencil } from "lucide-react"
 
 interface GameCardsProps {
     gamesData: Game[];
@@ -21,7 +28,7 @@ interface GameCardsProps {
 export function GameCards({gamesData, onDelete} : GameCardsProps) {
     const logoDimensions: number = 64;
     const iconDimensions: number = 18;
-    const trashDimensions: number = 20;
+    const footerIconDimensions: number = 20;
 
     // Track which notes are open by game index
     const [openNotes, setOpenNotes] = useState<boolean[]>([]);
@@ -32,10 +39,40 @@ export function GameCards({gamesData, onDelete} : GameCardsProps) {
         setOpenNotes(newOpenNotes);
     };
 
+    // Track modal status
+    const [modalOpen, setModalOpen] = useState(false);
+
+    const openModal = () => setModalOpen(true);
+    const closeModal = () => setModalOpen(false);
+
+    // Track content of edited notes
+    const [editableNotes, setEditableNotes] = useState("");
+
+    const handleNotesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setEditableNotes(e.target.value);
+      };
+      
+    // Track game being edited
+    const [selectedGame, setSelectedGame] = useState<Game | null>(null);
+
+    const openEditModal = (index: number) => {
+        setSelectedGame(gamesData[index]);
+        setEditableNotes(gamesData[index].notes ?? "");
+        openModal();
+    };
+
     return (
         <>
             {gamesData.map((game, index) => (
                 <Card key={index}>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-2 right-2 p-1"
+                        onClick={() => openEditModal(index)}
+                    >
+                        <Pencil className="w-4 h-4 text-gray-500 hover:text-gray-700" />
+                    </Button>
                     <CardHeader className="font-semibold text-center">
                         <CardTitle>
                             {/* TODO: do this more elegantly */ }
@@ -104,9 +141,29 @@ export function GameCards({gamesData, onDelete} : GameCardsProps) {
                                     <div className="border-l-2 mx-2 h-6"></div> 
                                 </>
                             )}
-                            <Trash2 
-                                className={`w-[${trashDimensions}px] h-[${trashDimensions}px] cursor-pointer`}
-                                onClick={() => onDelete(game)} />
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                <Pencil
+                                    className={`w-[${footerIconDimensions}px] h-[${footerIconDimensions}px] cursor-pointer`}
+                                    onClick={() => console.log("Hi")} // replace with your edit function
+                                />
+                                </TooltipTrigger>
+                                <TooltipContent side="top">
+                                    Edit notes for game
+                                </TooltipContent>
+                            </Tooltip>
+                            <div className="border-l-2 mx-2 h-6"></div>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                <Trash2
+                                    className={`w-[${footerIconDimensions}px] h-[${footerIconDimensions}px] cursor-pointer`}
+                                    onClick={() => onDelete(game)}
+                                />
+                                </TooltipTrigger>
+                                <TooltipContent side="top">
+                                    Delete game
+                                </TooltipContent>
+                            </Tooltip>
                         </span>
                      </CardFooter>
                 </Card>
