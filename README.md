@@ -37,6 +37,8 @@ create table public.games (
   arena_city text null,
   arena_state text null,
   arena_country text null,
+  neutral_site boolean, 
+  notes text null,
   constraint games_pkey primary key (
     user_email,
     game_id,
