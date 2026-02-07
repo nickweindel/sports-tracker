@@ -19,6 +19,7 @@ export interface Game {
   arena_state: string;
   arena_country: string;
   neutral_site: string;
+  notes: string | null;
 }
 
 type StatusType = {
