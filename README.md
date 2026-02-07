@@ -144,6 +144,7 @@ Rank override handles college sports games where one or more teams has the incor
 | `/api/teams`                | GET    | Fetch a team's record                 |
 | `/api/[sports]/[league]`    | GET    | Get league-specific game data         |
 | `/api/[sports]/[league]/events`| GET | Get all events for a specific league  |
+| `/api/update-notes`         | POST   | Update notes you've taken for a selected game |
 
 
 ---
