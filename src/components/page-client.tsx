@@ -180,7 +180,6 @@ export default function PageClient({ user }: { user: any }) {
         params.append('arena', selectedArena)
       }
 
-      console.log(`/api/teams?${params.toString()}`)
       const response = await fetch(`/api/teams?${params.toString()}`);
       const data = await response.json();
       if (response.ok) {
@@ -448,7 +447,7 @@ export default function PageClient({ user }: { user: any }) {
             <Skeleton className="w-full h-full" />
           : haveSeenGamesForLeague ? 
           (
-            <GameCards gamesData={games} onDelete={handleDelete} />
+            <GameCards gamesData={games} setGamesData={setGames} onDelete={handleDelete} />
           ) : (
             <NoGamesMessage infoText="No game log data for this league" />
           )}

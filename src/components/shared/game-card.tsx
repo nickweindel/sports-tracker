@@ -17,15 +17,16 @@ import { ScoreCard } from "./team-score";
 import { MapPin, Trash2, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { Game } from "@/types/game";
-import { Button } from "@/components/ui/button";
-import { Pencil } from "lucide-react"
+import { Pencil } from "lucide-react";
+import { NotesDialog } from "./notes-dialog";
 
 interface GameCardsProps {
     gamesData: Game[];
+    setGamesData: React.Dispatch<React.SetStateAction<Game[]>>; 
     onDelete: (game: Game) => void;
 }
 
-export function GameCards({gamesData, onDelete} : GameCardsProps) {
+export function GameCards({gamesData, setGamesData, onDelete} : GameCardsProps) {
     const logoDimensions: number = 64;
     const iconDimensions: number = 18;
     const footerIconDimensions: number = 20;
@@ -39,21 +40,9 @@ export function GameCards({gamesData, onDelete} : GameCardsProps) {
         setOpenNotes(newOpenNotes);
     };
 
-    // Track notes changing
-    const [editingNotes, setEditingNotes] = useState<boolean[]>(gamesData.map(() => false));
-    const [notesValue, setNotesValue] = useState<string[]>(gamesData.map((g) => g.notes ?? ""));
-  
-    const toggleEdit = (index: number) => {
-        const newEditing = [...editingNotes];
-        newEditing[index] = true; // always open on click
-        setEditingNotes(newEditing);
-      };
-    
-    const handleNotesChange = (index: number, value: string) => {
-        const newNotes = [...notesValue];
-        newNotes[index] = value;
-        setNotesValue(newNotes);
-    };
+    // Track which notes dialog is open and if the dialog is open, period
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [selectedGame, setSelectedGame] = useState<Game | null>(null);
 
     return (
         <>
@@ -131,7 +120,10 @@ export function GameCards({gamesData, onDelete} : GameCardsProps) {
                                 <TooltipTrigger asChild>
                                 <Pencil
                                     className={`w-[${footerIconDimensions}px] h-[${footerIconDimensions}px] cursor-pointer`}
-                                    onClick={() => console.log("Hi")} // replace with your edit function
+                                    onClick={() => {
+                                        setSelectedGame(game); // set game
+                                        setDialogOpen(true);   // open dialog
+                                    }}
                                 />
                                 </TooltipTrigger>
                                 <TooltipContent side="top">
@@ -154,6 +146,22 @@ export function GameCards({gamesData, onDelete} : GameCardsProps) {
                      </CardFooter>
                 </Card>
             ))}
+
+            {selectedGame && (
+                <NotesDialog
+                    game={selectedGame} // guaranteed non-null
+                    open={dialogOpen}
+                    onClose={() => {
+                        setDialogOpen(false);
+                        setSelectedGame(null);
+                    }}
+                    onNotesUpdated={(game_id, newNotes) => {
+                        setGamesData((prev) =>
+                            prev.map((g) => (g.game_id === game_id ? { ...g, notes: newNotes } : g))
+                        );
+                    }}
+                />
+            )}
         </>
     )
 } 
