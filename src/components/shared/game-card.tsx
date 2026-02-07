@@ -39,40 +39,26 @@ export function GameCards({gamesData, onDelete} : GameCardsProps) {
         setOpenNotes(newOpenNotes);
     };
 
-    // Track modal status
-    const [modalOpen, setModalOpen] = useState(false);
-
-    const openModal = () => setModalOpen(true);
-    const closeModal = () => setModalOpen(false);
-
-    // Track content of edited notes
-    const [editableNotes, setEditableNotes] = useState("");
-
-    const handleNotesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setEditableNotes(e.target.value);
+    // Track notes changing
+    const [editingNotes, setEditingNotes] = useState<boolean[]>(gamesData.map(() => false));
+    const [notesValue, setNotesValue] = useState<string[]>(gamesData.map((g) => g.notes ?? ""));
+  
+    const toggleEdit = (index: number) => {
+        const newEditing = [...editingNotes];
+        newEditing[index] = true; // always open on click
+        setEditingNotes(newEditing);
       };
-      
-    // Track game being edited
-    const [selectedGame, setSelectedGame] = useState<Game | null>(null);
-
-    const openEditModal = (index: number) => {
-        setSelectedGame(gamesData[index]);
-        setEditableNotes(gamesData[index].notes ?? "");
-        openModal();
+    
+    const handleNotesChange = (index: number, value: string) => {
+        const newNotes = [...notesValue];
+        newNotes[index] = value;
+        setNotesValue(newNotes);
     };
 
     return (
         <>
             {gamesData.map((game, index) => (
                 <Card key={index}>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="absolute top-2 right-2 p-1"
-                        onClick={() => openEditModal(index)}
-                    >
-                        <Pencil className="w-4 h-4 text-gray-500 hover:text-gray-700" />
-                    </Button>
                     <CardHeader className="font-semibold text-center">
                         <CardTitle>
                             {/* TODO: do this more elegantly */ }
@@ -124,7 +110,7 @@ export function GameCards({gamesData, onDelete} : GameCardsProps) {
                                 />
                             </div>
                             {openNotes[index] && (
-                                <div className="px-4 pb-4 text-sm text-gray-700 text-center border-t border-gray-100">
+                                <div className="px-4 pb-4 text-sm text-gray-700 text-center">
                                     {game.notes}
                                 </div>
                             )}
