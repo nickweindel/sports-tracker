@@ -21,6 +21,7 @@ import { TeamRecords } from "@/components/shared/team-records";
 import { SportSelect } from "@/components/shared/sport-select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { VisitKpi } from "@/components/shared/visit-kpi";
+import { Textarea } from "@/components/ui/textarea";
 
 import { Arena } from "@/types/arena"
 import { Game } from "@/types/game";
@@ -43,6 +44,7 @@ export default function PageClient({ user }: { user: any }) {
   const [records, setRecords] = useState<TeamRecord[]>([]);
   const [arenas, setArenas] = useState<Arena[]>([]);
   const [selectOptions, setSelectOptions] = useState<SelectOption[]>([]);
+  const [notes, setNotes] = useState<string | null>(null);
   
   // Loading state variables.
   const [isGamesLoading, setIsGamesLoading] = useState<boolean>(true);
@@ -88,6 +90,7 @@ export default function PageClient({ user }: { user: any }) {
     setAwayTeam("");
     setSelectedArena(undefined);
     setSelectedTeam(undefined);
+    setNotes(null);
   }
 
   // Handle selecting a date -- set the date and fetch events for that date.
@@ -97,6 +100,7 @@ export default function PageClient({ user }: { user: any }) {
 
     setDate(date);
     setOpen(false);
+    setNotes(null);
 
     const sport = LEAGUE_TO_SPORT_MAPPING[selectedLeague as League];
 
@@ -176,7 +180,6 @@ export default function PageClient({ user }: { user: any }) {
         params.append('arena', selectedArena)
       }
 
-      console.log(`/api/teams?${params.toString()}`)
       const response = await fetch(`/api/teams?${params.toString()}`);
       const data = await response.json();
       if (response.ok) {
@@ -338,6 +341,7 @@ export default function PageClient({ user }: { user: any }) {
             arena_state: venueState,
             arena_country: venueCountry,
             neutral_site: neutralSite,
+            notes: notes,
           }
 
            // POST this to our DB
@@ -403,7 +407,17 @@ export default function PageClient({ user }: { user: any }) {
             isDateSelected={date !== undefined}
             selectedGame={selectedGame}
             setSelectedGame={setSelectedGame}
-            isFetching={isFetching} />
+            isFetching={isFetching}
+            setNotes={setNotes} />
+          <div>
+            <Textarea
+              id="notes"
+              placeholder="Notes..."
+              value={notes ?? ""}
+              onChange={(e) => setNotes(e.target.value)}
+              className="mt-1"
+            />
+          </div>
           <Button onClick={submitGame} disabled={!date || !inputHomeTeam || !inputAwayTeam}>Submit Game</Button>
           {activeFilters.length > 0 && (
             <>
@@ -433,7 +447,7 @@ export default function PageClient({ user }: { user: any }) {
             <Skeleton className="w-full h-full" />
           : haveSeenGamesForLeague ? 
           (
-            <GameCards gamesData={games} onDelete={handleDelete} />
+            <GameCards gamesData={games} setGamesData={setGames} onDelete={handleDelete} />
           ) : (
             <NoGamesMessage infoText="No game log data for this league" />
           )}
