@@ -157,6 +157,27 @@ Rank override handles college sports games where one or more teams has the incor
 
 ---
 
+## Linting
+
+This repository uses [SQLFluff](https://www.sqlfluff.com/) for linting `.sql` files. 
+
+First, make sure that sqlfluff is installed:
+
+```bash
+pip install sqlfluff
+```
+
+Currently, there are no pre-commit hooks for linting in this repository. Instead, before committing any SQL changes, run the following and make sure no fixable errors remain:
+
+```bash
+sqlfluff lint path/to/sql
+sqlfluff fix path/to/sql
+```
+
+> Only lint new SQL migrations files. Linting and recommitting previous SQL files that are already a part of the migrations history should be avoided.
+
+---
+
 ## Notes
 
 - The app is built using the **App Router** in Next.js (`/src/app`)
