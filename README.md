@@ -159,6 +159,32 @@ Rank override handles college sports games where one or more teams has the incor
 
 ## Linting
 
+Currently, there are no pre-commit hooks for linting in this repository. Instead, follow the below instructions to clean files before committing.
+
+### TypeScript
+
+This repository uses [ESLint](https://eslint.org/) and [Prettier](https://prettier.io/) for linting `.ts`, `.tsx`, `.js`, `.jsx`, `.css`, and `.md` files and keeping formatting consistent.
+
+1. Check for issues:
+
+```bash
+pnpm run lint
+```
+
+2. Fix these issues:
+
+```bash
+pnpm run lint:fix
+```
+
+3. Format files with Prettier:
+
+```bash
+pnpm run format"
+```
+
+### SQL
+
 This repository uses [SQLFluff](https://www.sqlfluff.com/) for linting `.sql` files. 
 
 First, make sure that sqlfluff is installed:
@@ -167,7 +193,7 @@ First, make sure that sqlfluff is installed:
 pip install sqlfluff
 ```
 
-Currently, there are no pre-commit hooks for linting in this repository. Instead, before committing any SQL changes, run the following and make sure no fixable errors remain:
+Before committing any SQL changes, run the following and make sure no fixable errors remain:
 
 ```bash
 sqlfluff lint path/to/sql

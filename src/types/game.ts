@@ -31,8 +31,8 @@ type StatusType = {
     description: string;
     detail: string;
     shortDetail: string;
-  }
-}
+  };
+};
 
 export interface Event {
   name: string;

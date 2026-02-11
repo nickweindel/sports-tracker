@@ -12,19 +12,19 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from "@/components/ui/tooltip";
 import { useRouter } from "next/navigation";
 
 type PageHeaderProps = {
-  user: string
-}
+  user: string;
+};
 
 export function PageHeader({ user }: PageHeaderProps) {
   const router = useRouter();
 
   const sendToUpdatePasswordPage = () => {
     router.push("/auth/update-password");
-  }
+  };
 
   const signOut = () => {
     const supabase = createClient();
@@ -32,18 +32,18 @@ export function PageHeader({ user }: PageHeaderProps) {
     supabase.auth.signOut();
 
     router.push("/auth/login");
-  }
+  };
 
   const userDropdownMenu = [
     {
-      "key": "update_password",
-      "text": "Update Password",
-      "function": sendToUpdatePasswordPage
+      key: "update_password",
+      text: "Update Password",
+      function: sendToUpdatePasswordPage,
     },
     {
-      "key": "logout",
-      "text": "Logout",
-      "function": signOut
+      key: "logout",
+      text: "Logout",
+      function: signOut,
     },
   ];
 
@@ -55,7 +55,10 @@ export function PageHeader({ user }: PageHeaderProps) {
       <div className="flex flex-row gap-3">
         <Tooltip>
           <TooltipTrigger>
-            <a href="https://github.com/nickweindel/sports-tracker" target="_blank">
+            <a
+              href="https://github.com/nickweindel/sports-tracker"
+              target="_blank"
+            >
               <Braces />
             </a>
           </TooltipTrigger>
@@ -68,9 +71,12 @@ export function PageHeader({ user }: PageHeaderProps) {
             <CircleUser />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-40" align="end">
-            {userDropdownMenu.map(menuItem => {
+            {userDropdownMenu.map((menuItem) => {
               return (
-                <DropdownMenuItem key={menuItem.key} onClick={menuItem.function}>
+                <DropdownMenuItem
+                  key={menuItem.key}
+                  onClick={menuItem.function}
+                >
                   {menuItem.text}
                 </DropdownMenuItem>
               );
@@ -79,5 +85,5 @@ export function PageHeader({ user }: PageHeaderProps) {
         </DropdownMenu>
       </div>
     </header>
-  )
+  );
 }

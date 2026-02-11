@@ -38,7 +38,7 @@ export function UpdatePasswordForm({
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
       setIsLoading(false);
-    } 
+    }
   };
 
   return (

@@ -1,9 +1,9 @@
-import { 
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from "@/components/ui/select";
 
 import { SelectOption } from "@/types/generic";
@@ -19,15 +19,16 @@ interface GameSelectProps {
   setNotes: (notes: string | null) => void;
 }
 
-export const GameSelect = ({ 
-  selectOptions, 
-  setHomeTeam, 
-  setAwayTeam, 
-  isDateSelected, 
-  selectedGame, 
-  setSelectedGame, 
+export const GameSelect = ({
+  selectOptions,
+  setHomeTeam,
+  setAwayTeam,
+  isDateSelected,
+  selectedGame,
+  setSelectedGame,
   isFetching,
-  setNotes }: GameSelectProps) => {
+  setNotes,
+}: GameSelectProps) => {
   return (
     <Select
       value={selectedGame}
@@ -39,10 +40,10 @@ export const GameSelect = ({
         let away, home;
 
         if (trimmed.includes("@")) {
-          [away, home] = trimmed.split("@").map(t => t.trim());
+          [away, home] = trimmed.split("@").map((t) => t.trim());
         } else {
           // This handles neutral site games where the game "value" uses VS instead of @
-          [away, home] = trimmed.split(/vs/i).map(t => t.trim());
+          [away, home] = trimmed.split(/vs/i).map((t) => t.trim());
         }
 
         setHomeTeam(home);
@@ -50,14 +51,20 @@ export const GameSelect = ({
         setNotes(null);
       }}
     >
-      <SelectTrigger disabled={!isDateSelected || selectOptions.length === 0} className="w-full">
-        <SelectValue placeholder={!isDateSelected
-                                  ? "Select a date first"
-                                  : selectOptions.length === 0
-                                    ? "No events for this date"
-                                    : isFetching
-                                      ? "Fetching games..."
-                                      : "Select a game"}
+      <SelectTrigger
+        disabled={!isDateSelected || selectOptions.length === 0}
+        className="w-full"
+      >
+        <SelectValue
+          placeholder={
+            !isDateSelected
+              ? "Select a date first"
+              : selectOptions.length === 0
+                ? "No events for this date"
+                : isFetching
+                  ? "Fetching games..."
+                  : "Select a game"
+          }
         />
       </SelectTrigger>
 

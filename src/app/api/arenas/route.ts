@@ -1,40 +1,43 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 
 export async function GET(request: NextRequest) {
-  const supabase = await createClient(); 
+  const supabase = await createClient();
 
   try {
     const { searchParams } = new URL(request.url);
-    const league = searchParams.get('league');
-    const user = searchParams.get('user');
-    const team = searchParams.get('team');
+    const league = searchParams.get("league");
+    const user = searchParams.get("user");
+    const team = searchParams.get("team");
 
     if (!league) {
       return NextResponse.json(
-        { error: 'No league was specified' },
-        { status: 500 }
-      )
+        { error: "No league was specified" },
+        { status: 500 },
+      );
     }
 
     const { data, error } = await supabase
-    .rpc('arenas', {
-      team: team || null,
-    })
-    .eq('league', league)
-    .eq('user_email', user)
+      .rpc("arenas", {
+        team: team || null,
+      })
+      .eq("league", league)
+      .eq("user_email", user);
 
     if (error) {
-      console.error('Supabase fetch error:', error);
-      return NextResponse.json({ error: 'Failed to fetch records' }, { status: 500 });
+      console.error("Supabase fetch error:", error);
+      return NextResponse.json(
+        { error: "Failed to fetch records" },
+        { status: 500 },
+      );
     }
 
     return NextResponse.json({ arenas: data });
   } catch (error) {
-    console.error('Error fetching team records:', error)
+    console.error("Error fetching team records:", error);
     return NextResponse.json(
-      { error: 'Failed to fetch team records' },
-      { status: 500 }
-    )
+      { error: "Failed to fetch team records" },
+      { status: 500 },
+    );
   }
 }

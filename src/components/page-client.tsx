@@ -23,7 +23,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { VisitKpi } from "@/components/shared/visit-kpi";
 import { Textarea } from "@/components/ui/textarea";
 
-import { Arena } from "@/types/arena"
+import { Arena } from "@/types/arena";
 import { Game } from "@/types/game";
 import { SelectOption } from "@/types/generic";
 import { League } from "@/types/league";
@@ -45,16 +45,21 @@ export default function PageClient({ user }: { user: any }) {
   const [arenas, setArenas] = useState<Arena[]>([]);
   const [selectOptions, setSelectOptions] = useState<SelectOption[]>([]);
   const [notes, setNotes] = useState<string | null>(null);
-  
+
   // Loading state variables.
   const [isGamesLoading, setIsGamesLoading] = useState<boolean>(true);
-  const [isTeamRecordsLoading, setIsTeamRecordsLoading] = useState<boolean>(true);
+  const [isTeamRecordsLoading, setIsTeamRecordsLoading] =
+    useState<boolean>(true);
   const [isArenasLoading, setIsArenasLoading] = useState<boolean>(true);
   const [isFetching, setIsFetching] = useState<boolean>(false); // fetching status for games selector
 
   // Optional filter fields.
-  const [selectedArena, setSelectedArena] = useState<string | undefined>(undefined);
-  const [selectedTeam, setSelectedTeam] = useState<string | undefined>(undefined);
+  const [selectedArena, setSelectedArena] = useState<string | undefined>(
+    undefined,
+  );
+  const [selectedTeam, setSelectedTeam] = useState<string | undefined>(
+    undefined,
+  );
 
   const activeFilters = useMemo(() => {
     return [
@@ -72,12 +77,12 @@ export default function PageClient({ user }: { user: any }) {
       },
     ].filter((f) => Boolean(f.value));
   }, [selectedArena, selectedTeam]);
-  
+
   // Constant to see if we've seen any games.
   const haveSeenGamesForLeague = games.length > 0;
 
   // Decide if we're calling the venues stadiums or arenas.
-  const venueType = LEAGUE_TO_VENUE_TYPE_MAPPING[selectedLeague as League]
+  const venueType = LEAGUE_TO_VENUE_TYPE_MAPPING[selectedLeague as League];
 
   // Function to handle changing the league.
   const handleLeagueChange = (value: string) => {
@@ -91,12 +96,15 @@ export default function PageClient({ user }: { user: any }) {
     setSelectedArena(undefined);
     setSelectedTeam(undefined);
     setNotes(null);
-  }
+  };
 
   // Handle selecting a date -- set the date and fetch events for that date.
-  const handleSelect = async(selectedDate: Date | undefined) => {
+  const handleSelect = async (selectedDate: Date | undefined) => {
     const date = selectedDate;
-    const formattedDate = selectedDate?.toISOString().split("T")[0].replace(/-/g, "");  
+    const formattedDate = selectedDate
+      ?.toISOString()
+      .split("T")[0]
+      .replace(/-/g, "");
 
     setDate(date);
     setOpen(false);
@@ -105,7 +113,9 @@ export default function PageClient({ user }: { user: any }) {
     const sport = LEAGUE_TO_SPORT_MAPPING[selectedLeague as League];
 
     setIsFetching(true);
-    const eventData = await fetch(`api/${sport}/${selectedLeague}/events?date=${formattedDate}`);
+    const eventData = await fetch(
+      `api/${sport}/${selectedLeague}/events?date=${formattedDate}`,
+    );
 
     if (eventData.ok) {
       const data = await eventData.json();
@@ -113,7 +123,7 @@ export default function PageClient({ user }: { user: any }) {
     }
 
     setIsFetching(false);
-  }
+  };
 
   // Function to fetch all games from the database
   const fetchGames = async () => {
@@ -126,11 +136,11 @@ export default function PageClient({ user }: { user: any }) {
       });
 
       if (selectedArena) {
-        params.append('arena', selectedArena);
+        params.append("arena", selectedArena);
       }
 
       if (selectedTeam) {
-        params.append('team', selectedTeam);
+        params.append("team", selectedTeam);
       }
 
       const response = await fetch(`/api/games?${params.toString()}`);
@@ -140,10 +150,10 @@ export default function PageClient({ user }: { user: any }) {
         const gameData = data.games;
         setGames(gameData);
       } else {
-        console.error('Error fetching games:', data.error);
+        console.error("Error fetching games:", data.error);
       }
     } catch (error) {
-      console.error('Error fetching games:', error);
+      console.error("Error fetching games:", error);
     } finally {
       setIsGamesLoading(false);
     }
@@ -151,23 +161,25 @@ export default function PageClient({ user }: { user: any }) {
 
   // Fetch games on page load
   useEffect(() => {
-    fetchGames()
+    fetchGames();
   }, [selectedLeague, selectedArena, selectedTeam]);
 
   // Calculate distinct counts for KPIs
   const distinctGames = games.length;
 
-  const distinctTeams = games.length > 0 ? new Set([
-    ...games.map(game => game.home_team),
-    ...games.map(game => game.away_team)
-  ]).size : 0
+  const distinctTeams =
+    games.length > 0
+      ? new Set([
+          ...games.map((game) => game.home_team),
+          ...games.map((game) => game.away_team),
+        ]).size
+      : 0;
 
-  const distinctArenas = games.length > 0 ? new Set(
-    games.map(game => game.arena)
-  ).size : 0;
+  const distinctArenas =
+    games.length > 0 ? new Set(games.map((game) => game.arena)).size : 0;
 
   // Function to fetch all team records from the database
-  const fetchTeamRecords = async() => {
+  const fetchTeamRecords = async () => {
     try {
       setIsTeamRecordsLoading(true);
 
@@ -177,30 +189,30 @@ export default function PageClient({ user }: { user: any }) {
       });
 
       if (selectedArena) {
-        params.append('arena', selectedArena)
+        params.append("arena", selectedArena);
       }
 
       const response = await fetch(`/api/teams?${params.toString()}`);
       const data = await response.json();
       if (response.ok) {
-        const teamRecordData = data.teamRecords
+        const teamRecordData = data.teamRecords;
         setRecords(teamRecordData);
       } else {
-        console.error('Error fetching games:', data.error);
-      } 
+        console.error("Error fetching games:", data.error);
+      }
     } catch (error) {
-      console.error('Error fetching games:', error);
+      console.error("Error fetching games:", error);
     } finally {
       setIsTeamRecordsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchTeamRecords()
+    fetchTeamRecords();
   }, [games, selectedLeague]);
 
   // Function to fetch all arena visits from the database.
-  const fetchArenas = async() => {
+  const fetchArenas = async () => {
     try {
       setIsArenasLoading(true);
 
@@ -210,7 +222,7 @@ export default function PageClient({ user }: { user: any }) {
       });
 
       if (selectedTeam) {
-        params.append('team', selectedTeam)
+        params.append("team", selectedTeam);
       }
 
       const response = await fetch(`/api/arenas?${params.toString()}`);
@@ -219,77 +231,94 @@ export default function PageClient({ user }: { user: any }) {
         const arenaData = data.arenas;
         setArenas(arenaData);
       } else {
-        console.error('Error fetching arenas:', data.error);
+        console.error("Error fetching arenas:", data.error);
       }
     } catch (error) {
-      console.error('Error fetching games:', error);
+      console.error("Error fetching games:", error);
     } finally {
       setIsArenasLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchArenas()
+    fetchArenas();
   }, [games, selectedLeague, selectedTeam]);
 
   // Handle delete.
   const handleDelete = async (game: Game) => {
-      try {
-        // Send DELETE request to the API
-        const response = await fetch('/api/games', {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(game),
-        });
+    try {
+      // Send DELETE request to the API
+      const response = await fetch("/api/games", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(game),
+      });
 
-        if (response.ok) {
-          fetchGames();
-        } else {
-          const errorData = await response.json();
-          console.error('Failed to delete game:', errorData);
-          alert(errorData.error || 'Failed to delete game');
-        }
-      } catch (error) {
-        console.error('Error deleting game:', error);
-        alert('An error occurred while deleting the game');
+      if (response.ok) {
+        fetchGames();
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to delete game:", errorData);
+        alert(errorData.error || "Failed to delete game");
       }
+    } catch (error) {
+      console.error("Error deleting game:", error);
+      alert("An error occurred while deleting the game");
+    }
   };
 
   const submitGame = () => {
     // TODO: there has to be a better way to abstract this, especially when we continue to add leagues
-    const formattedDate = date ? date.toISOString().split('T')[0] : undefined;
-    const apiDate = date ? date.toISOString().split('T')[0].replace(/-/g, '') : undefined;
+    const formattedDate = date ? date.toISOString().split("T")[0] : undefined;
+    const apiDate = date
+      ? date.toISOString().split("T")[0].replace(/-/g, "")
+      : undefined;
 
     const sport = LEAGUE_TO_SPORT_MAPPING[selectedLeague as League];
-    
+
     fetch(`/api/${sport}/${selectedLeague}?date=${apiDate}`)
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         let filteredGame;
 
-        filteredGame = data.events.filter((event: any) =>
-            event.shortName.toLowerCase().includes(inputAwayTeam.toLowerCase()) &&
-            event.shortName.toLowerCase().includes(inputHomeTeam.toLowerCase()));
+        filteredGame = data.events.filter(
+          (event: any) =>
+            event.shortName
+              .toLowerCase()
+              .includes(inputAwayTeam.toLowerCase()) &&
+            event.shortName.toLowerCase().includes(inputHomeTeam.toLowerCase()),
+        );
 
-        // TODO: handle 
+        // TODO: handle
         if (filteredGame.length === 0) {
-          window.alert(`No game on ${formattedDate} between ${inputHomeTeam} and ${inputAwayTeam}`);
+          window.alert(
+            `No game on ${formattedDate} between ${inputHomeTeam} and ${inputAwayTeam}`,
+          );
           return;
         }
-        
+
         const gameId = filteredGame[0].id;
         const gameData = filteredGame[0].competitions[0];
-        const homeTeamData = gameData.competitors.find((team: TeamType) => team.homeAway === "home");
-        const awayTeamData = gameData.competitors.find((team: TeamType) => team.homeAway === "away"); 
+        const homeTeamData = gameData.competitors.find(
+          (team: TeamType) => team.homeAway === "home",
+        );
+        const awayTeamData = gameData.competitors.find(
+          (team: TeamType) => team.homeAway === "away",
+        );
 
         // Check that we have the home and away teams correct.
         const homeTeamAbbreviation = homeTeamData.team.abbreviation;
         const awayTeamAbbreviation = awayTeamData.team.abbreviation;
 
-        if (homeTeamAbbreviation !== inputHomeTeam || awayTeamAbbreviation !== inputAwayTeam) {
-          window.alert(`Home and away teams are backwards. The home team is ${inputAwayTeam} and the away team is ${inputHomeTeam}`);
+        if (
+          homeTeamAbbreviation !== inputHomeTeam ||
+          awayTeamAbbreviation !== inputAwayTeam
+        ) {
+          window.alert(
+            `Home and away teams are backwards. The home team is ${inputAwayTeam} and the away team is ${inputHomeTeam}`,
+          );
           return;
         }
 
@@ -306,8 +335,12 @@ export default function PageClient({ user }: { user: any }) {
         const awayTeamRank = awayTeamData.curatedRank?.current ?? null;
 
         // Recap/box score link.
-        const recapLink = filteredGame[0].links.find((link: LinkType) => link.text === "Recap")?.href
-          || filteredGame[0].links.find((link: LinkType) => link.text === "Box Score")?.href;
+        const recapLink =
+          filteredGame[0].links.find((link: LinkType) => link.text === "Recap")
+            ?.href ||
+          filteredGame[0].links.find(
+            (link: LinkType) => link.text === "Box Score",
+          )?.href;
 
         // Venue info.
         const neutralSite = gameData.neutralSite;
@@ -342,31 +375,31 @@ export default function PageClient({ user }: { user: any }) {
             arena_country: venueCountry,
             neutral_site: neutralSite,
             notes: notes,
-          }
+          };
 
-           // POST this to our DB
-           fetch('/api/games', {
-             method: 'POST',
-             headers: {
-               'Content-Type': 'application/json',
-             },
-             body: JSON.stringify(gameToLoad),
-           })
-           .then(response => response.json())
-           .then(data => {
-             // Refetch games after successful POST
-             fetchGames();
-           })
-           .catch(error => {
-             console.error('Error saving game:', error);
-           });
-        } 
+          // POST this to our DB
+          fetch("/api/games", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(gameToLoad),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              // Refetch games after successful POST
+              fetchGames();
+            })
+            .catch((error) => {
+              console.error("Error saving game:", error);
+            });
+        }
       })
-      .catch(error => {
-        console.error('Error fetching game data:', error)
-      })
-  }
-  
+      .catch((error) => {
+        console.error("Error fetching game data:", error);
+      });
+  };
+
   return (
     <div>
       <PageHeader user={user} />
@@ -374,9 +407,21 @@ export default function PageClient({ user }: { user: any }) {
         <div className="flex flex-col gap-3 p-3 w-70">
           <SportSelect onChange={handleLeagueChange} />
           <HorizontalSeparator />
-          <VisitKpi seenAttribute="Games" numberSeen={distinctGames} isLoading={isGamesLoading} />
-          <VisitKpi seenAttribute="Teams" numberSeen={distinctTeams} isLoading={isGamesLoading} />
-          <VisitKpi seenAttribute={String(venueType)} numberSeen={distinctArenas} isLoading={isGamesLoading} />
+          <VisitKpi
+            seenAttribute="Games"
+            numberSeen={distinctGames}
+            isLoading={isGamesLoading}
+          />
+          <VisitKpi
+            seenAttribute="Teams"
+            numberSeen={distinctTeams}
+            isLoading={isGamesLoading}
+          />
+          <VisitKpi
+            seenAttribute={String(venueType)}
+            numberSeen={distinctArenas}
+            isLoading={isGamesLoading}
+          />
           <HorizontalSeparator />
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
@@ -385,11 +430,14 @@ export default function PageClient({ user }: { user: any }) {
                 id="date"
                 className="justify-between font-normal"
               >
-                {date ? date.toISOString().split('T')[0] : "Select date"}
+                {date ? date.toISOString().split("T")[0] : "Select date"}
                 <ChevronDownIcon />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+            <PopoverContent
+              className="w-auto overflow-hidden p-0"
+              align="start"
+            >
               <Calendar
                 mode="single"
                 selected={date}
@@ -400,15 +448,16 @@ export default function PageClient({ user }: { user: any }) {
               />
             </PopoverContent>
           </Popover>
-          <GameSelect 
-            selectOptions={selectOptions} 
-            setHomeTeam={setHomeTeam} 
-            setAwayTeam={setAwayTeam} 
+          <GameSelect
+            selectOptions={selectOptions}
+            setHomeTeam={setHomeTeam}
+            setAwayTeam={setAwayTeam}
             isDateSelected={date !== undefined}
             selectedGame={selectedGame}
             setSelectedGame={setSelectedGame}
             isFetching={isFetching}
-            setNotes={setNotes} />
+            setNotes={setNotes}
+          />
           <div>
             <Textarea
               id="notes"
@@ -418,7 +467,12 @@ export default function PageClient({ user }: { user: any }) {
               className="mt-1"
             />
           </div>
-          <Button onClick={submitGame} disabled={!date || !inputHomeTeam || !inputAwayTeam}>Submit Game</Button>
+          <Button
+            onClick={submitGame}
+            disabled={!date || !inputHomeTeam || !inputAwayTeam}
+          >
+            Submit Game
+          </Button>
           {activeFilters.length > 0 && (
             <>
               <HorizontalSeparator />
@@ -432,44 +486,58 @@ export default function PageClient({ user }: { user: any }) {
                   />
                 ))}
               </div>
-              <Button size="sm" onClick={() => {
-                setSelectedArena(undefined);
-                setSelectedTeam(undefined);
-              }}>
+              <Button
+                size="sm"
+                onClick={() => {
+                  setSelectedArena(undefined);
+                  setSelectedTeam(undefined);
+                }}
+              >
                 Clear all
               </Button>
             </>
           )}
-          
         </div>
         <div className="flex flex-col gap-3 w-150">
-          {isTeamRecordsLoading ? 
+          {isTeamRecordsLoading ? (
             <Skeleton className="w-full h-full" />
-          : haveSeenGamesForLeague ? 
-          (
-            <GameCards gamesData={games} setGamesData={setGames} onDelete={handleDelete} />
+          ) : haveSeenGamesForLeague ? (
+            <GameCards
+              gamesData={games}
+              setGamesData={setGames}
+              onDelete={handleDelete}
+            />
           ) : (
             <NoGamesMessage infoText="No game log data for this league" />
           )}
         </div>
         <div className="w-100">
-          {isTeamRecordsLoading ? 
+          {isTeamRecordsLoading ? (
             <Skeleton className="w-full h-full" />
-          : haveSeenGamesForLeague ? 
-          (
-            <TeamRecords recordsData={records} selectedTeam={selectedTeam} onTeamSelect={setSelectedTeam}/> 
+          ) : haveSeenGamesForLeague ? (
+            <TeamRecords
+              recordsData={records}
+              selectedTeam={selectedTeam}
+              onTeamSelect={setSelectedTeam}
+            />
           ) : (
             <NoGamesMessage infoText="No team record data for this league" />
           )}
         </div>
         <div className="w-100">
-          {isArenasLoading ?
+          {isArenasLoading ? (
             <Skeleton className="w-full h-full" />
-          : haveSeenGamesForLeague ? 
-          ( 
-            <ArenaVisits arenasData={arenas} venueType={String(venueType)} selectedArena={selectedArena} onArenaSelect={setSelectedArena} />
+          ) : haveSeenGamesForLeague ? (
+            <ArenaVisits
+              arenasData={arenas}
+              venueType={String(venueType)}
+              selectedArena={selectedArena}
+              onArenaSelect={setSelectedArena}
+            />
           ) : (
-            <NoGamesMessage infoText={`No ${String(venueType).toLowerCase()} visit data for this league`} />
+            <NoGamesMessage
+              infoText={`No ${String(venueType).toLowerCase()} visit data for this league`}
+            />
           )}
         </div>
       </div>
