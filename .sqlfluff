@@ -1,0 +1,19 @@
+[sqlfluff]
+dialect = postgres
+templeter = raw
+max_line_length = 80
+large_file_skip_byte_limit = 0
+
+# Ignore LT05 (max line length) and Lt12 (ending files with trailing newline)
+exclude_rules = LT12, LT05
+
+# Global rule defaults
+[sqlfluff:rules]
+capitalisation_policy = upper
+
+# Capitalization rules
+[sqlfluff:rules:capitalisation.keywords]
+capitalisation_policy = upper
+
+[sqlfluff:rules:capitalisation.identifiers]
+capitalisation_policy = lower

@@ -1,5 +1,5 @@
 export interface Arena {
-    league: string;
-    arena: string;
-    visits: number;
+  league: string;
+  arena: string;
+  visits: number;
 }
