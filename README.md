@@ -97,6 +97,10 @@ Rank override handles college sports games where one or more teams has the incor
 │   │   ├── constants.ts
 │   │   └── utils.ts
 │   └── types/                # TypeScript types (arena, game, etc.)
+├── supabase/
+│   ├── migrations/
+│   │   ├── README.md
+│   │   └── 20260206224440_remote_schema.sql # Baseline checkin of supabase schema
 ├── package.json
 ├── pnpm-lock.yaml
 └── README.md
