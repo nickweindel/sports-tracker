@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from "@/lib/supabase/server";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -8,7 +8,10 @@ export async function POST(req: NextRequest) {
     const { user_email, game_id, notes } = await req.json();
 
     if (!user_email || !game_id) {
-      return NextResponse.json({ error: "Missing user_email or game_id" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing user_email or game_id" },
+        { status: 400 },
+      );
     }
 
     const newNotes = notes?.trim() === "" ? null : notes;

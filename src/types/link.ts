@@ -1,3 +1,3 @@
 export interface LinkType {
-    text: "Recap" | "Box Score";
+  text: "Recap" | "Box Score";
 }

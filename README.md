@@ -97,6 +97,10 @@ Rank override handles college sports games where one or more teams has the incor
 │   │   ├── constants.ts
 │   │   └── utils.ts
 │   └── types/                # TypeScript types (arena, game, etc.)
+├── supabase/
+│   ├── migrations/
+│   │   ├── README.md
+│   │   └── 20260206224440_remote_schema.sql # Baseline checkin of supabase schema
 ├── package.json
 ├── pnpm-lock.yaml
 └── README.md
@@ -154,6 +158,53 @@ Rank override handles college sports games where one or more teams has the incor
 - League icons and logos are stored in `/public/league-logos`
 - Other generic icons are stored directly in `/public`
 - Assets are used in UI components like dropdowns and cards
+
+---
+
+## Linting
+
+Currently, there are no pre-commit hooks for linting in this repository. Instead, follow the below instructions to clean files before committing.
+
+### TypeScript
+
+This repository uses [ESLint](https://eslint.org/) and [Prettier](https://prettier.io/) for linting `.ts`, `.tsx`, `.js`, `.jsx`, `.css`, and `.md` files and keeping formatting consistent.
+
+1. Check for issues:
+
+```bash
+pnpm run lint
+```
+
+2. Fix these issues:
+
+```bash
+pnpm run lint:fix
+```
+
+3. Format files with Prettier:
+
+```bash
+pnpm run format"
+```
+
+### SQL
+
+This repository uses [SQLFluff](https://www.sqlfluff.com/) for linting `.sql` files. 
+
+First, make sure that sqlfluff is installed:
+
+```bash
+pip install sqlfluff
+```
+
+Before committing any SQL changes, run the following and make sure no fixable errors remain:
+
+```bash
+sqlfluff lint path/to/sql
+sqlfluff fix path/to/sql
+```
+
+> Only lint new SQL migrations files. Linting and recommitting previous SQL files that are already a part of the migrations history should be avoided.
 
 ---
 
