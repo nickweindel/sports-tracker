@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Game } from "@/types/game";
 import { createClient } from "@/lib/supabase/client";
 import { uploadGamePhotos } from "@/lib/photos";
+import { toast } from "sonner";
 import { Loader2, UploadCloud } from "lucide-react";
 
 interface NotesAndPhotosDialogProps {
@@ -93,7 +94,11 @@ export const NotesAndPhotosDialog: React.FC<NotesAndPhotosDialogProps> = ({
         },
       );
 
-      if (uploaded > 0) onPhotosUploaded?.();
+      if (uploaded > 0) {
+        onPhotosUploaded?.();
+        toast.success("Photos uploaded successfully. You may need to refresh to see them.");
+        onClose();
+      }
       if (failed > 0) {
         errors.forEach((err) => console.error("Upload error:", err));
       }
