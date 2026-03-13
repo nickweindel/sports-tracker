@@ -64,6 +64,39 @@ create table public.team_override (
   team_logo text null,
   constraint team_override_pkey primary key (league, team_abbreviation)
 )
+
+create table public.game_photos (
+  id uuid primary key default gen_random_uuid(),
+
+  user_email text not null,
+  game_id integer not null,
+  league text not null,
+  game_date date not null,
+  home_team text not null,
+  away_team text not null,
+
+  storage_path text not null,
+  caption text,
+  created_at timestamp default now(),
+
+  foreign key (
+    user_email,
+    game_id,
+    league,
+    game_date,
+    home_team,
+    away_team
+  )
+  references public.games (
+    user_email,
+    game_id,
+    league,
+    game_date,
+    home_team,
+    away_team
+  )
+  on delete cascade
+);
 ```
 
 Rank override handles college sports games where one or more teams has the incorrect ranking. Team override is a way to handle teams that have relocated or have different abbreviations to ensure consistency in logos and abbreviations. Long-term, this should be handled in a more elegant way, such as using a team ID. An example is the Oakland Athletics. Their old logo, `oak.png` is not found anymore on ESPN's website, so it needs to be hardcoded to `ath.png`.
