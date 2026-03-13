@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Game } from "@/types/game";
 import { createClient } from "@/lib/supabase/client";
+import { uploadGamePhotos } from "@/lib/photos";
 import { Loader2, UploadCloud } from "lucide-react";
 
 interface NotesAndPhotosDialogProps {
@@ -71,40 +72,27 @@ export const NotesAndPhotosDialog: React.FC<NotesAndPhotosDialogProps> = ({
     }
   };
 
-  // --- Photo Upload Logic ---
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) return;
+    if (!e.target.files?.length) return;
 
     setUploading(true);
 
     try {
-      for (const file of Array.from(e.target.files)) {
-        const path = `${game.user_email}/${
-          game.league
-        }/${game.game_id}/${crypto.randomUUID()}-${file.name}`;
-
-        // Upload to Supabase storage
-        const { error: uploadError } = await supabase.storage
-          .from("photos")
-          .upload(path, file);
-
-        if (uploadError) {
-          console.error("Upload error:", uploadError);
-          continue;
-        }
-
-        // Insert metadata in game_photos table
-        const { error: dbError } = await supabase.from("game_photos").insert({
+      const { failed, errors } = await uploadGamePhotos(
+        supabase,
+        Array.from(e.target.files),
+        {
           user_email: game.user_email,
           game_id: game.game_id,
           league: game.league,
           game_date: game.game_date,
           home_team: game.home_team,
           away_team: game.away_team,
-          storage_path: path,
-        });
+        }
+      );
 
-        if (dbError) console.error("DB insert error:", dbError);
+      if (failed > 0) {
+        errors.forEach((err) => console.error("Upload error:", err));
       }
     } catch (err) {
       console.error("Upload failed:", err);
