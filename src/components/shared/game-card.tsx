@@ -14,7 +14,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ScoreCard } from "./team-score";
-import { MapPin, Trash2, ChevronDown } from "lucide-react";
+import { MapPin, Trash2, ChevronDown, Camera } from "lucide-react";
 import { useState } from "react";
 import { Game } from "@/types/game";
 import { Pencil } from "lucide-react";
@@ -138,6 +138,16 @@ export function GameCards({
                   />
                 </TooltipTrigger>
                 <TooltipContent side="top">Edit notes for game</TooltipContent>
+              </Tooltip>
+              <div className="border-l-2 mx-2 h-6"></div>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Camera
+                    className={`w-[${footerIconDimensions}px] h-[${footerIconDimensions}px] cursor-pointer`}
+                    onClick={() => {console.log("Add photos")}}
+                  />
+                </TooltipTrigger>
+                <TooltipContent side="top">Add photos of game</TooltipContent>
               </Tooltip>
               <div className="border-l-2 mx-2 h-6"></div>
               <Tooltip>
