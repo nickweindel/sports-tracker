@@ -2,6 +2,37 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 
 const PHOTOS_BUCKET = "photos";
 
+export interface GamePhoto {
+  id: string;
+  game_id: number;
+  storage_path: string;
+  public_url: string;
+}
+
+/**
+ * Fetches photos for a user's league, optionally filtered by game_id.
+ * Returns photos with public_url for display.
+ */
+export async function fetchGamePhotos(params: {
+  user_email: string;
+  league: string;
+  game_id?: number;
+}): Promise<GamePhoto[]> {
+  const url = new URL("/api/photos", window.location.origin);
+  url.searchParams.set("user_email", params.user_email);
+  url.searchParams.set("league", params.league);
+  if (params.game_id != null) {
+    url.searchParams.set("game_id", String(params.game_id));
+  }
+  const res = await fetch(url.toString());
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error ?? "Failed to fetch photos");
+  }
+  const data = await res.json();
+  return data.photos ?? [];
+}
+
 export interface GamePhotoPayload {
   user_email: string;
   game_id: number;

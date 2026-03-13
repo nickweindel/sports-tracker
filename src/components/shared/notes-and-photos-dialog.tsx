@@ -20,6 +20,7 @@ interface NotesAndPhotosDialogProps {
   open: boolean;
   onClose: () => void;
   onNotesUpdated?: (game_id: number, notes: string | null) => void;
+  onPhotosUploaded?: () => void;
 }
 
 export const NotesAndPhotosDialog: React.FC<NotesAndPhotosDialogProps> = ({
@@ -27,6 +28,7 @@ export const NotesAndPhotosDialog: React.FC<NotesAndPhotosDialogProps> = ({
   open,
   onClose,
   onNotesUpdated,
+  onPhotosUploaded,
 }) => {
   const [notes, setNotes] = useState(game.notes || "");
   const [loading, setLoading] = useState(false);
@@ -78,7 +80,7 @@ export const NotesAndPhotosDialog: React.FC<NotesAndPhotosDialogProps> = ({
     setUploading(true);
 
     try {
-      const { failed, errors } = await uploadGamePhotos(
+      const { uploaded, failed, errors } = await uploadGamePhotos(
         supabase,
         Array.from(e.target.files),
         {
@@ -91,6 +93,7 @@ export const NotesAndPhotosDialog: React.FC<NotesAndPhotosDialogProps> = ({
         }
       );
 
+      if (uploaded > 0) onPhotosUploaded?.();
       if (failed > 0) {
         errors.forEach((err) => console.error("Upload error:", err));
       }
