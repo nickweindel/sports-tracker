@@ -166,13 +166,6 @@ export const NotesAndPhotosDialog: React.FC<NotesAndPhotosDialogProps> = ({
               </>
             )}
           </Button>
-
-          {uploading && (
-            <span className="text-sm text-gray-500 flex items-center space-x-1">
-              <Loader2 className="w-4 h-4 animate-spin" />
-              <span>Uploading files...</span>
-            </span>
-          )}
         </div>
 
         <Textarea
