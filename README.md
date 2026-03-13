@@ -217,7 +217,7 @@ pnpm run lint:fix
 3. Format files with Prettier:
 
 ```bash
-pnpm run format"
+pnpm run format
 ```
 
 ### SQL

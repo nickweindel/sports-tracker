@@ -94,17 +94,15 @@ export const NotesAndPhotosDialog: React.FC<NotesAndPhotosDialogProps> = ({
         }
 
         // Insert metadata in game_photos table
-        const { error: dbError } = await supabase
-          .from("game_photos")
-          .insert({
-            user_email: game.user_email,
-            game_id: game.game_id,
-            league: game.league,
-            game_date: game.game_date,
-            home_team: game.home_team,
-            away_team: game.away_team,
-            storage_path: path,
-          });
+        const { error: dbError } = await supabase.from("game_photos").insert({
+          user_email: game.user_email,
+          game_id: game.game_id,
+          league: game.league,
+          game_date: game.game_date,
+          home_team: game.home_team,
+          away_team: game.away_team,
+          storage_path: path,
+        });
 
         if (dbError) console.error("DB insert error:", dbError);
       }
@@ -140,14 +138,6 @@ export const NotesAndPhotosDialog: React.FC<NotesAndPhotosDialogProps> = ({
           />
         </div>
 
-        <Textarea
-          placeholder="Add notes..."
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          className="mb-4"
-          rows={4}
-        />
-
         {/* Hidden file input */}
         <input
           type="file"
@@ -158,38 +148,46 @@ export const NotesAndPhotosDialog: React.FC<NotesAndPhotosDialogProps> = ({
           className="hidden"
         />
 
-      <div className="flex justify-between items-center mb-4">
-        <Button
-          onClick={() => fileInputRef.current?.click()}
-          disabled={uploading}
-          className="flex items-center space-x-2"
-        >
-          {uploading ? (
-            <>
-              <Loader2 className="w-5 h-5 animate-spin" />
-              <span>Uploading...</span>
-            </>
-          ) : (
-            <>
-              <UploadCloud className="w-5 h-5" />
-              <span>Upload Photos</span>
-            </>
-          )}
-        </Button>
+        <div className="flex justify-center items-center mb-4">
+          <Button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploading}
+            className="flex items-center space-x-2"
+          >
+            {uploading ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>Uploading...</span>
+              </>
+            ) : (
+              <>
+                <UploadCloud className="w-5 h-5" />
+                <span>Upload Photos</span>
+              </>
+            )}
+          </Button>
 
-        {uploading && (
-          <span className="text-sm text-gray-500 flex items-center space-x-1">
-            <Loader2 className="w-4 h-4 animate-spin" />
-            <span>Uploading files...</span>
-          </span>
-        )}
-      </div>
+          {uploading && (
+            <span className="text-sm text-gray-500 flex items-center space-x-1">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span>Uploading files...</span>
+            </span>
+          )}
+        </div>
+
+        <Textarea
+          placeholder="Add notes..."
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          className="mb-4"
+          rows={4}
+        />
 
         <div className="flex justify-end space-x-2">
           <Button onClick={handleSubmit} disabled={loading} variant="default">
             Submit
           </Button>
-          <Button onClick={onClose} variant="destructive">
+          <Button onClick={onClose} variant="outline">
             Close
           </Button>
         </div>

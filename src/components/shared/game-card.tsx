@@ -137,7 +137,9 @@ export function GameCards({
                     }}
                   />
                 </TooltipTrigger>
-                <TooltipContent side="top">Add additional content for this game (notes and photos)</TooltipContent>
+                <TooltipContent side="top">
+                  Add additional content for this game (notes and photos)
+                </TooltipContent>
               </Tooltip>
               <div className="border-l-2 mx-2 h-6"></div>
               <Tooltip>
