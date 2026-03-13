@@ -18,7 +18,7 @@ import { MapPin, Trash2, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { Game } from "@/types/game";
 import { Pencil } from "lucide-react";
-import { NotesDialog } from "./notes-dialog";
+import { NotesAndPhotosDialog } from "./notes-and-photos-dialog";
 
 interface GameCardsProps {
   gamesData: Game[];
@@ -137,7 +137,7 @@ export function GameCards({
                     }}
                   />
                 </TooltipTrigger>
-                <TooltipContent side="top">Edit notes for game</TooltipContent>
+                <TooltipContent side="top">Add additional content for this game (notes and photos)</TooltipContent>
               </Tooltip>
               <div className="border-l-2 mx-2 h-6"></div>
               <Tooltip>
@@ -155,7 +155,7 @@ export function GameCards({
       ))}
 
       {selectedGame && (
-        <NotesDialog
+        <NotesAndPhotosDialog
           game={selectedGame} // guaranteed non-null
           open={dialogOpen}
           onClose={() => {
