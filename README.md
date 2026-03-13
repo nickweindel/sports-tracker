@@ -1,6 +1,6 @@
 # Sports Game Tracker
 
-A web application built with **Next.js**, **Supabase**, and **ShadCN UI** and deployed with **Vercel**, designed to track sports games across different leagues and venues. Users can view, add, and delete game data, as well as analyze venue and team stats.
+A web application built with **Next.js**, **Supabase**, and **ShadCN UI** and deployed with **Vercel**, designed to track sports games across different leagues and venues. Users can view, add, and delete game data; add notes and upload photos per game; and analyze venue and team stats.
 
 ---
 
@@ -99,7 +99,9 @@ create table public.game_photos (
 );
 ```
 
-Rank override handles college sports games where one or more teams has the incorrect ranking. Team override is a way to handle teams that have relocated or have different abbreviations to ensure consistency in logos and abbreviations. Long-term, this should be handled in a more elegant way, such as using a team ID. An example is the Oakland Athletics. Their old logo, `oak.png` is not found anymore on ESPN's website, so it needs to be hardcoded to `ath.png`.
+- **Rank override** handles college sports games where one or more teams has the incorrect ranking.
+- **Team override** handles relocated teams or different abbreviations for consistent logos and names (e.g. Oakland Athletics `oak.png` → `ath.png`). Long-term this could use a team ID.
+- **game_photos** stores metadata for photos uploaded per game; files live in Supabase Storage in the public `photos` bucket.
 
 ---
 
@@ -116,7 +118,9 @@ Rank override handles college sports games where one or more teams has the incor
 |   |   |   ├── [sports]/[league]/events/route.ts    # Fetches games for a given league that have gone final
 │   │   │   ├── arenas/route.ts                      # Gets game counts per arena/stadium
 │   │   │   ├── games/route.ts                       # GET, POST, DELETE games
-│   │   │   └── teams/route.ts                       # Team-specific game stats
+│   │   │   ├── photos/route.ts                      # GET photos (storage URLs) for games
+│   │   │   ├── teams/route.ts                       # Team-specific game stats
+│   │   │   └── update-notes/route.ts                 # POST to update game notes
 |   |   ├── auth/             # Pages for performing auth actions (change password, login, etc.)
 │   │   ├── page.tsx          # The only page in the app
 │   │   ├── layout.tsx
@@ -126,14 +130,13 @@ Rank override handles college sports games where one or more teams has the incor
 │   │   ├── shared/           # Custom reusable components
 │   │   └── ui/               # ShadCN components
 │   ├── lib/
-|   |   ├── supabase          # Supabase client, server, and middleware utilities
+│   │   ├── supabase/        # Supabase client, server, and middleware utilities
 │   │   ├── constants.ts
+│   │   ├── photos.ts        # Photo upload helpers and fetchGamePhotos()
 │   │   └── utils.ts
 │   └── types/                # TypeScript types (arena, game, etc.)
 ├── supabase/
-│   ├── migrations/
-│   │   ├── README.md
-│   │   └── 20260206224440_remote_schema.sql # Baseline checkin of supabase schema
+│   └── migrations/          # See supabase/migrations/README.md for migration list
 ├── package.json
 ├── pnpm-lock.yaml
 └── README.md
@@ -181,7 +184,8 @@ Rank override handles college sports games where one or more teams has the incor
 | `/api/teams`                | GET    | Fetch a team's record                 |
 | `/api/[sports]/[league]`    | GET    | Get league-specific game data         |
 | `/api/[sports]/[league]/events`| GET | Get all events for a specific league  |
-| `/api/update-notes`         | POST   | Update notes you've taken for a selected game |
+| `/api/update-notes`         | POST   | Update notes for a selected game               |
+| `/api/photos`              | GET    | Fetch photos for a user/league (optional `game_id` filter) |
 
 
 ---
@@ -244,10 +248,11 @@ sqlfluff fix path/to/sql
 ## Notes
 
 - The app is built using the **App Router** in Next.js (`/src/app`)
-- Currently functions as a single-page dashboard (`page.tsx`)
+- Single-page dashboard with game cards: notes (expand/collapse) and photos (count + dialog to cycle through images)
+- Photos are uploaded to Supabase Storage and listed via `game_photos`; public URLs are served from `/api/photos`
 - Uses modular API routes for fetching and updating game data
-- The database table has a composite primary key to ensure uniqueness
-- Ideal for tracking in-person sports attendance, scores, and venues
+- Games use a composite primary key for uniqueness
+- Ideal for tracking in-person sports attendance, scores, notes, and photos
 
 ---
 

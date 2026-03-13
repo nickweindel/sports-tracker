@@ -53,7 +53,7 @@ export interface UploadResult {
 export async function uploadGamePhoto(
   supabase: SupabaseClient,
   file: File,
-  game: GamePhotoPayload
+  game: GamePhotoPayload,
 ): Promise<UploadResult> {
   const path = `${game.user_email}/${game.league}/${game.game_id}/${crypto.randomUUID()}-${file.name}`;
 
@@ -89,7 +89,7 @@ export async function uploadGamePhoto(
 export async function uploadGamePhotos(
   supabase: SupabaseClient,
   files: File[],
-  game: GamePhotoPayload
+  game: GamePhotoPayload,
 ): Promise<{ uploaded: number; failed: number; errors: string[] }> {
   const errors: string[] = [];
   let uploaded = 0;

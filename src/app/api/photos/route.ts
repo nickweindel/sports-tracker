@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
     if (!user_email || !league) {
       return NextResponse.json(
         { error: "Missing user_email or league" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -41,10 +41,7 @@ export async function GET(req: NextRequest) {
 
     if (error) {
       console.error("Supabase game_photos fetch error:", error);
-      return NextResponse.json(
-        { error: error.message },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
     const photos: GamePhotoResponse[] = (rows ?? []).map((row) => {
@@ -64,7 +61,7 @@ export async function GET(req: NextRequest) {
     console.error("API photos error:", err);
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Failed to fetch photos" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

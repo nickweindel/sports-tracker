@@ -90,7 +90,7 @@ export const NotesAndPhotosDialog: React.FC<NotesAndPhotosDialogProps> = ({
           game_date: game.game_date,
           home_team: game.home_team,
           away_team: game.away_team,
-        }
+        },
       );
 
       if (uploaded > 0) onPhotosUploaded?.();

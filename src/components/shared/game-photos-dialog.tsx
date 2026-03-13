@@ -48,10 +48,8 @@ export function GamePhotosDialog({
 
   const current = photos[index] ?? null;
   const hasMultiple = photos.length > 1;
-  const goPrev = () =>
-    setIndex((i) => (i <= 0 ? photos.length - 1 : i - 1));
-  const goNext = () =>
-    setIndex((i) => (i >= photos.length - 1 ? 0 : i + 1));
+  const goPrev = () => setIndex((i) => (i <= 0 ? photos.length - 1 : i - 1));
+  const goNext = () => setIndex((i) => (i >= photos.length - 1 ? 0 : i + 1));
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
@@ -73,7 +71,8 @@ export function GamePhotosDialog({
             />
           </div>
           <DialogDescription className="text-center">
-            {game.game_date} — {photos.length} photo{photos.length !== 1 ? "s" : ""}
+            {game.game_date} — {photos.length} photo
+            {photos.length !== 1 ? "s" : ""}
           </DialogDescription>
         </DialogHeader>
 

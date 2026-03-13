@@ -147,7 +147,9 @@ export function GameCards({
                     onClick={() => toggleNotes(index)}
                     className="flex items-center hover:text-gray-700 cursor-pointer"
                   >
-                    <span>{openNotes[index] ? "Hide Notes" : "Show Notes"}</span>
+                    <span>
+                      {openNotes[index] ? "Hide Notes" : "Show Notes"}
+                    </span>
                     <ChevronDown
                       className={`ml-2 w-4 h-4 transition-transform duration-200 ease-in-out ${
                         openNotes[index] ? "rotate-180" : ""
