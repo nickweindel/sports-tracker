@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useState, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -9,22 +11,31 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Game } from "@/types/game";
+import { createClient } from "@/lib/supabase/client";
+import { uploadGamePhotos } from "@/lib/photos";
+import { toast } from "sonner";
+import { Loader2, UploadCloud } from "lucide-react";
 
-interface NotesDialogProps {
+interface NotesAndPhotosDialogProps {
   game: Game;
   open: boolean;
   onClose: () => void;
-  onNotesUpdated?: (game_id: number, notes: string | null) => void; // optional callback to update parent
+  onNotesUpdated?: (game_id: number, notes: string | null) => void;
+  onPhotosUploaded?: () => void;
 }
 
-export const NotesDialog: React.FC<NotesDialogProps> = ({
+export const NotesAndPhotosDialog: React.FC<NotesAndPhotosDialogProps> = ({
   game,
   open,
   onClose,
   onNotesUpdated,
+  onPhotosUploaded,
 }) => {
   const [notes, setNotes] = useState(game.notes || "");
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const supabase = createClient();
 
   // Reset notes whenever a new game opens
   React.useEffect(() => {
@@ -41,7 +52,7 @@ export const NotesDialog: React.FC<NotesDialogProps> = ({
         body: JSON.stringify({
           user_email: game.user_email,
           game_id: game.game_id,
-          notes: notes, // can be empty string
+          notes: notes,
         }),
       });
 
@@ -61,6 +72,41 @@ export const NotesDialog: React.FC<NotesDialogProps> = ({
       console.error("Network error:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.length) return;
+
+    setUploading(true);
+
+    try {
+      const { uploaded, failed, errors } = await uploadGamePhotos(
+        supabase,
+        Array.from(e.target.files),
+        {
+          user_email: game.user_email,
+          game_id: game.game_id,
+          league: game.league,
+          game_date: game.game_date,
+          home_team: game.home_team,
+          away_team: game.away_team,
+        },
+      );
+
+      if (uploaded > 0) {
+        onPhotosUploaded?.();
+        toast.success("Photos uploaded successfully. You may need to refresh to see them.");
+        onClose();
+      }
+      if (failed > 0) {
+        errors.forEach((err) => console.error("Upload error:", err));
+      }
+    } catch (err) {
+      console.error("Upload failed:", err);
+    } finally {
+      setUploading(false);
+      e.target.value = "";
     }
   };
 
@@ -88,6 +134,36 @@ export const NotesDialog: React.FC<NotesDialogProps> = ({
           />
         </div>
 
+        {/* Hidden file input */}
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          ref={fileInputRef}
+          onChange={handleFileSelect}
+          className="hidden"
+        />
+
+        <div className="flex justify-center items-center mb-4">
+          <Button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploading}
+            className="flex items-center space-x-2"
+          >
+            {uploading ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>Uploading...</span>
+              </>
+            ) : (
+              <>
+                <UploadCloud className="w-5 h-5" />
+                <span>Upload Photos</span>
+              </>
+            )}
+          </Button>
+        </div>
+
         <Textarea
           placeholder="Add notes..."
           value={notes}
@@ -100,7 +176,7 @@ export const NotesDialog: React.FC<NotesDialogProps> = ({
           <Button onClick={handleSubmit} disabled={loading} variant="default">
             Submit
           </Button>
-          <Button onClick={onClose} variant="destructive">
+          <Button onClick={onClose} variant="outline">
             Close
           </Button>
         </div>
