@@ -33,8 +33,18 @@ import { TeamRecord, TeamType } from "@/types/team";
 import { LEAGUE_TO_SPORT_MAPPING } from "@/lib/constants";
 import { LEAGUE_TO_VENUE_TYPE_MAPPING } from "@/lib/constants";
 
+const SELECTED_LEAGUE_KEY = "sports-tracker-selected-league";
+
 export default function PageClient({ user }: { user: any }) {
   const [selectedLeague, setSelectedLeague] = useState<string>("mlb");
+
+  // Restore selected league from localStorage after mount (avoids hydration mismatch)
+  useEffect(() => {
+    const stored = localStorage.getItem(SELECTED_LEAGUE_KEY);
+    if (stored && stored in LEAGUE_TO_SPORT_MAPPING) {
+      setSelectedLeague(stored);
+    }
+  }, []);
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [calendarMonth, setCalendarMonth] = useState<Date>(() => new Date());
@@ -93,6 +103,9 @@ export default function PageClient({ user }: { user: any }) {
   // Function to handle changing the league.
   const handleLeagueChange = (value: string) => {
     setSelectedLeague(value);
+    if (typeof window !== "undefined") {
+      localStorage.setItem(SELECTED_LEAGUE_KEY, value);
+    }
 
     // Reset everything when league changes.
     setDate(undefined);
@@ -411,7 +424,7 @@ export default function PageClient({ user }: { user: any }) {
       <PageHeader user={user} />
       <div className="flex flex-row gap-3 p-3">
         <div className="flex flex-col gap-3 p-3 w-70">
-          <SportSelect onChange={handleLeagueChange} />
+          <SportSelect value={selectedLeague} onChange={handleLeagueChange} />
           <HorizontalSeparator />
           <VisitKpi
             seenAttribute="Games"
