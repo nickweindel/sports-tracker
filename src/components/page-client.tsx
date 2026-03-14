@@ -37,6 +37,7 @@ export default function PageClient({ user }: { user: any }) {
   const [selectedLeague, setSelectedLeague] = useState<string>("mlb");
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date | undefined>(undefined);
+  const [calendarMonth, setCalendarMonth] = useState<Date>(() => new Date());
   const [selectedGame, setSelectedGame] = useState<string | undefined>();
   const [inputHomeTeam, setHomeTeam] = useState<string>(""); // TODO: rename this state variable
   const [inputAwayTeam, setAwayTeam] = useState<string>(""); // TODO: rename this state variable
@@ -77,6 +78,11 @@ export default function PageClient({ user }: { user: any }) {
       },
     ].filter((f) => Boolean(f.value));
   }, [selectedArena, selectedTeam]);
+
+  // Reset calendar to current month when switching leagues
+  useEffect(() => {
+    setCalendarMonth(new Date());
+  }, [selectedLeague]);
 
   // Constant to see if we've seen any games.
   const haveSeenGamesForLeague = games.length > 0;
@@ -440,10 +446,13 @@ export default function PageClient({ user }: { user: any }) {
             >
               <Calendar
                 mode="single"
+                month={calendarMonth}
+                onMonthChange={setCalendarMonth}
                 selected={date}
                 captionLayout="dropdown"
-                onSelect={(date) => {
-                  handleSelect(date);
+                onSelect={(selectedDate) => {
+                  handleSelect(selectedDate);
+                  if (selectedDate) setCalendarMonth(selectedDate);
                 }}
               />
             </PopoverContent>
