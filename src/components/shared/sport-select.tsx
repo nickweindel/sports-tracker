@@ -9,10 +9,11 @@ import {
 } from "@/components/ui/select";
 
 interface SportSelectProps {
+  value?: string;
   onChange: (value: string) => void;
 }
 
-export function SportSelect({ onChange }: SportSelectProps) {
+export function SportSelect({ value, onChange }: SportSelectProps) {
   const publicSubDirectory = "league-logos";
   const basketballSubDirectory = "basketball";
   const soccerSubDirectory = "soccer";
@@ -117,7 +118,7 @@ export function SportSelect({ onChange }: SportSelectProps) {
   ];
 
   return (
-    <Select defaultValue="mlb" onValueChange={onChange}>
+    <Select value={value ?? "mlb"} onValueChange={onChange}>
       <SelectTrigger className="w-auto">
         <SelectValue placeholder="Select a league" />
       </SelectTrigger>
