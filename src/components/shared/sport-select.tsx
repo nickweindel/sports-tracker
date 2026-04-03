@@ -61,6 +61,11 @@ export function SportSelect({ value, onChange }: SportSelectProps) {
       imageSrc: ncaaPath,
     },
     {
+      value: "fifa.world",
+      label: "FIFA World Cup",
+      imageSrc: `/${publicSubDirectory}/${soccerSubDirectory}/fifa.png`,
+    },
+    {
       value: "arg.1",
       label: "Argentine Primera División",
       imageSrc: `/${publicSubDirectory}/${soccerSubDirectory}/arg.png`,
