@@ -96,7 +96,9 @@ export const NotesAndPhotosDialog: React.FC<NotesAndPhotosDialogProps> = ({
 
       if (uploaded > 0) {
         onPhotosUploaded?.();
-        toast.success("Photos uploaded successfully. You may need to refresh to see them.");
+        toast.success(
+          "Photos uploaded successfully. You may need to refresh to see them.",
+        );
         onClose();
       }
       if (failed > 0) {
