@@ -1,4 +1,6 @@
-CREATE OR REPLACE FUNCTION "public"."teams"("arena" "text" DEFAULT NULL::"text") RETURNS TABLE("user_email" "text", "league" "text", "team" "text", "team_logo" "text", "home_wins" bigint, "home_losses" bigint, "home_ties" bigint, "away_wins" bigint, "away_losses" bigint, "away_ties" bigint, "neutral_wins" bigint, "neutral_losses" bigint, "neutral_ties" bigint, "overall_wins" bigint, "overall_losses" bigint, "overall_ties" bigint)
+DROP FUNCTION IF EXISTS "public"."teams"("arena" "text");
+
+CREATE OR REPLACE FUNCTION "public"."teams"("arena" "text" DEFAULT NULL::"text") RETURNS TABLE("user_email" "text", "league" "text", "team" "text", "team_logo" "text", "home_team_points_for" bigint, "home_team_points_against" bigint, "home_team_point_differential" bigint, "away_team_points_for" bigint, "away_team_points_against" bigint, "away_team_point_differential" bigint, "neutral_team_points_for" bigint, "neutral_team_points_against" bigint, "neutral_team_point_differential" bigint, "overall_team_points_for" bigint, "overall_team_points_against" bigint, "overall_team_point_differential" bigint, "home_wins" bigint, "home_losses" bigint, "home_ties" bigint, "away_wins" bigint, "away_losses" bigint, "away_ties" bigint, "neutral_wins" bigint, "neutral_losses" bigint, "neutral_ties" bigint, "overall_wins" bigint, "overall_losses" bigint, "overall_ties" bigint)
     LANGUAGE "sql"
     AS $_$with
   cte_games AS (
