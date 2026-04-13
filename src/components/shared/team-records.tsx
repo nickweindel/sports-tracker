@@ -10,9 +10,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { NoGamesMessage } from "@/components/shared/no-data";
 
-import { LEAGUE_TIES_ALLOWED } from "@/lib/constants";
+import {
+  LEAGUE_TIES_ALLOWED,
+  LEAGUE_TO_SCORE_TYPE_MAPPING,
+} from "@/lib/constants";
 
 import { TeamRecord } from "@/types/team";
 
@@ -78,10 +86,48 @@ export function TeamRecords({
         return b.winningPercentage - a.winningPercentage; // primary sort
       }
 
-      if (b.wins !== a.wins) {
-        return b.wins - a.wins; // secondary sort
+      const dimensionWinsKey = `${recordDimension}_wins` as keyof TeamRecord;
+      const dimensionLossesKey =
+        `${recordDimension}_losses` as keyof TeamRecord;
+      const dimensionPointDifferentialKey =
+        `${recordDimension}_team_point_differential` as keyof TeamRecord;
+      const dimensionPointsForKey =
+        `${recordDimension}_team_points_for` as keyof TeamRecord;
+      const dimensionPointsAgainstKey =
+        `${recordDimension}_team_points_against` as keyof TeamRecord;
+
+      const aDimensionWins = Number(a[dimensionWinsKey]);
+      const bDimensionWins = Number(b[dimensionWinsKey]);
+      const aDimensionLosses = Number(a[dimensionLossesKey]);
+      const bDimensionLosses = Number(b[dimensionLossesKey]);
+      const aDimensionPointDifferential = Number(
+        a[dimensionPointDifferentialKey],
+      );
+      const bDimensionPointDifferential = Number(
+        b[dimensionPointDifferentialKey],
+      );
+      const aDimensionPointsFor = Number(a[dimensionPointsForKey]);
+      const bDimensionPointsFor = Number(b[dimensionPointsForKey]);
+      const aDimensionPointsAgainst = Number(a[dimensionPointsAgainstKey]);
+      const bDimensionPointsAgainst = Number(b[dimensionPointsAgainstKey]);
+
+      if (bDimensionWins !== aDimensionWins) {
+        return bDimensionWins - aDimensionWins; // secondary sort
       }
-      return a.losses - b.losses; // tertiary sort
+
+      if (aDimensionLosses !== bDimensionLosses) {
+        return aDimensionLosses - bDimensionLosses; // tertiary sort
+      }
+
+      if (bDimensionPointDifferential !== aDimensionPointDifferential) {
+        return bDimensionPointDifferential - aDimensionPointDifferential; // quaternary sort
+      }
+
+      if (bDimensionPointsFor !== aDimensionPointsFor) {
+        return bDimensionPointsFor - aDimensionPointsFor; // quinary sort
+      }
+
+      return aDimensionPointsAgainst - bDimensionPointsAgainst; // senary sort
     });
 
   return (
@@ -123,6 +169,42 @@ export function TeamRecords({
                     winningPercentage / 10,
                   ).format("0.000");
                   const isTiesAllowed = LEAGUE_TIES_ALLOWED[team.league];
+                  const scoreType =
+                    LEAGUE_TO_SCORE_TYPE_MAPPING[
+                      team.league as keyof typeof LEAGUE_TO_SCORE_TYPE_MAPPING
+                    ] ?? "points";
+                  const metricPrefix = `${recordDimension}_team`;
+                  const pointsFor = Number(
+                    team[
+                      `${metricPrefix}_points_for` as keyof TeamRecord
+                    ] as number,
+                  );
+                  const pointsAgainst = Number(
+                    team[
+                      `${metricPrefix}_points_against` as keyof TeamRecord
+                    ] as number,
+                  );
+                  const pointDifferential = Number(
+                    team[
+                      `${metricPrefix}_point_differential` as keyof TeamRecord
+                    ] as number,
+                  );
+                  const differentialClassName =
+                    pointDifferential > 0
+                      ? "text-green-600"
+                      : pointDifferential < 0
+                        ? "text-red-600"
+                        : "text-muted-foreground";
+                  const scoreTypeText = String(scoreType);
+                  const scoreTypeLabel =
+                    scoreTypeText.charAt(0).toUpperCase() +
+                    scoreTypeText.slice(1);
+                  const formattedDifferential = `${
+                    pointDifferential > 0 ? "+" : ""
+                  }${pointDifferential}`;
+                  const formattedPointsFor = numeral(pointsFor).format("0,0");
+                  const formattedPointsAgainst =
+                    numeral(pointsAgainst).format("0,0");
 
                   // Conditional logic to see if we should highlight a team's card.
                   const isSelected = selectedTeam === team.team;
@@ -152,6 +234,24 @@ export function TeamRecords({
                             {Number(wins)}W - {Number(losses)}L
                             {isTiesAllowed && ` - ${Number(ties)}T`}
                           </span>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span
+                                className={`font-semibold ${differentialClassName}`}
+                              >
+                                {formattedDifferential}
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent sideOffset={6}>
+                              <p>
+                                {scoreTypeLabel} For: {formattedPointsFor}
+                              </p>
+                              <p>
+                                {scoreTypeLabel} Against:{" "}
+                                {formattedPointsAgainst}
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
                           <span className="font-bold">
                             {formattedWinningPercentage}
                           </span>
