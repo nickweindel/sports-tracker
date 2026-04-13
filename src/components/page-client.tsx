@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { ActiveFilterChip } from "@/components/shared/active-filter-chip";
 import { ArenaVisits } from "@/components/shared/arena-visits";
@@ -38,6 +38,10 @@ const SELECTED_LEAGUE_KEY = "sports-tracker-selected-league";
 export default function PageClient({ user }: { user: any }) {
   const [selectedLeague, setSelectedLeague] = useState<string>("mlb");
 
+  const gamesFetchGen = useRef(0);
+  const teamsFetchGen = useRef(0);
+  const arenasFetchGen = useRef(0);
+
   // Restore selected league from localStorage after mount (avoids hydration mismatch)
   useEffect(() => {
     const stored = localStorage.getItem(SELECTED_LEAGUE_KEY);
@@ -45,6 +49,13 @@ export default function PageClient({ user }: { user: any }) {
       setSelectedLeague(stored);
     }
   }, []);
+
+  // Drop stale list data immediately so games/teams/arenas never disagree on league.
+  useEffect(() => {
+    setGames([]);
+    setRecords([]);
+    setArenas([]);
+  }, [selectedLeague]);
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [calendarMonth, setCalendarMonth] = useState<Date>(() => new Date());
@@ -146,6 +157,7 @@ export default function PageClient({ user }: { user: any }) {
 
   // Function to fetch all games from the database
   const fetchGames = async () => {
+    const gen = ++gamesFetchGen.current;
     try {
       setIsGamesLoading(true);
 
@@ -165,6 +177,9 @@ export default function PageClient({ user }: { user: any }) {
       const response = await fetch(`/api/games?${params.toString()}`);
 
       const data = await response.json();
+      if (gen !== gamesFetchGen.current) {
+        return;
+      }
       if (response.ok) {
         const gameData = data.games;
         setGames(gameData);
@@ -174,7 +189,9 @@ export default function PageClient({ user }: { user: any }) {
     } catch (error) {
       console.error("Error fetching games:", error);
     } finally {
-      setIsGamesLoading(false);
+      if (gen === gamesFetchGen.current) {
+        setIsGamesLoading(false);
+      }
     }
   };
 
@@ -199,6 +216,7 @@ export default function PageClient({ user }: { user: any }) {
 
   // Function to fetch all team records from the database
   const fetchTeamRecords = async () => {
+    const gen = ++teamsFetchGen.current;
     try {
       setIsTeamRecordsLoading(true);
 
@@ -213,6 +231,9 @@ export default function PageClient({ user }: { user: any }) {
 
       const response = await fetch(`/api/teams?${params.toString()}`);
       const data = await response.json();
+      if (gen !== teamsFetchGen.current) {
+        return;
+      }
       if (response.ok) {
         const teamRecordData = data.teamRecords;
         setRecords(teamRecordData);
@@ -222,16 +243,19 @@ export default function PageClient({ user }: { user: any }) {
     } catch (error) {
       console.error("Error fetching games:", error);
     } finally {
-      setIsTeamRecordsLoading(false);
+      if (gen === teamsFetchGen.current) {
+        setIsTeamRecordsLoading(false);
+      }
     }
   };
 
   useEffect(() => {
     fetchTeamRecords();
-  }, [games, selectedLeague]);
+  }, [games, selectedLeague, selectedArena]);
 
   // Function to fetch all arena visits from the database.
   const fetchArenas = async () => {
+    const gen = ++arenasFetchGen.current;
     try {
       setIsArenasLoading(true);
 
@@ -246,6 +270,9 @@ export default function PageClient({ user }: { user: any }) {
 
       const response = await fetch(`/api/arenas?${params.toString()}`);
       const data = await response.json();
+      if (gen !== arenasFetchGen.current) {
+        return;
+      }
       if (response.ok) {
         const arenaData = data.arenas;
         setArenas(arenaData);
@@ -255,7 +282,9 @@ export default function PageClient({ user }: { user: any }) {
     } catch (error) {
       console.error("Error fetching games:", error);
     } finally {
-      setIsArenasLoading(false);
+      if (gen === arenasFetchGen.current) {
+        setIsArenasLoading(false);
+      }
     }
   };
 
