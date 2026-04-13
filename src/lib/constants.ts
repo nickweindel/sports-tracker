@@ -1,5 +1,6 @@
 import { League } from "@/types/league";
 import { Sport } from "@/types/sport";
+import { ScoreType } from "@/types/score-type";
 import { VenueType } from "@/types/venue-type";
 
 // API constants.
@@ -78,4 +79,31 @@ export const LEAGUE_TIES_ALLOWED: { [key: string]: boolean } = {
   "mex.1": true,
   "bra.1": true,
   "por.1": true,
+};
+
+// League-to-score-type mapping.
+export const LEAGUE_TO_SCORE_TYPE_MAPPING: Record<
+  League,
+  ScoreType[keyof ScoreType]
+> = {
+  "college-football": "points",
+  nba: "points",
+  wnba: "points",
+  nhl: "goals",
+  "mens-college-basketball": "points",
+  "womens-college-basketball": "points",
+  nfl: "points",
+  mlb: "runs",
+  "fifa.world": "goals",
+  "arg.1": "goals",
+  "eng.1": "goals",
+  "usa.1": "goals",
+  "fra.1": "goals",
+  "esp.1": "goals",
+  "ger.1": "goals",
+  "ned.1": "goals",
+  "ita.1": "goals",
+  "mex.1": "goals",
+  "bra.1": "goals",
+  "por.1": "goals",
 };
