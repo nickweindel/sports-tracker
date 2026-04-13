@@ -422,8 +422,8 @@ export default function PageClient({ user }: { user: any }) {
   return (
     <div>
       <PageHeader user={user} />
-      <div className="flex flex-row gap-3 p-3">
-        <div className="flex flex-col gap-3 p-3 w-70">
+      <div className="flex flex-col gap-3 p-3 lg:flex-row">
+        <div className="flex w-full flex-col gap-3 p-3 lg:w-70">
           <SportSelect value={selectedLeague} onChange={handleLeagueChange} />
           <HorizontalSeparator />
           <VisitKpi
@@ -447,7 +447,7 @@ export default function PageClient({ user }: { user: any }) {
               <Button
                 variant="outline"
                 id="date"
-                className="justify-between font-normal"
+                className="w-full justify-between font-normal"
               >
                 {date ? date.toISOString().split("T")[0] : "Select date"}
                 <ChevronDownIcon />
@@ -492,6 +492,7 @@ export default function PageClient({ user }: { user: any }) {
           <Button
             onClick={submitGame}
             disabled={!date || !inputHomeTeam || !inputAwayTeam}
+            className="w-full"
           >
             Submit Game
           </Button>
@@ -510,6 +511,7 @@ export default function PageClient({ user }: { user: any }) {
               </div>
               <Button
                 size="sm"
+                className="w-full"
                 onClick={() => {
                   setSelectedArena(undefined);
                   setSelectedTeam(undefined);
@@ -520,7 +522,7 @@ export default function PageClient({ user }: { user: any }) {
             </>
           )}
         </div>
-        <div className="flex flex-col gap-3 w-150">
+        <div className="flex w-full min-w-0 flex-col gap-3 lg:w-150">
           {isTeamRecordsLoading ? (
             <Skeleton className="w-full h-full" />
           ) : haveSeenGamesForLeague ? (
@@ -533,7 +535,7 @@ export default function PageClient({ user }: { user: any }) {
             <NoGamesMessage infoText="No game log data for this league" />
           )}
         </div>
-        <div className="w-100">
+        <div className="w-full lg:w-100">
           {isTeamRecordsLoading ? (
             <Skeleton className="w-full h-full" />
           ) : haveSeenGamesForLeague ? (
@@ -546,7 +548,7 @@ export default function PageClient({ user }: { user: any }) {
             <NoGamesMessage infoText="No team record data for this league" />
           )}
         </div>
-        <div className="w-100">
+        <div className="w-full lg:w-100">
           {isArenasLoading ? (
             <Skeleton className="w-full h-full" />
           ) : haveSeenGamesForLeague ? (
