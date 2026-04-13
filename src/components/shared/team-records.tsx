@@ -17,7 +17,10 @@ import {
 } from "@/components/ui/tooltip";
 import { NoGamesMessage } from "@/components/shared/no-data";
 
-import { LEAGUE_TIES_ALLOWED, LEAGUE_TO_SCORE_TYPE_MAPPING } from "@/lib/constants";
+import {
+  LEAGUE_TIES_ALLOWED,
+  LEAGUE_TO_SCORE_TYPE_MAPPING,
+} from "@/lib/constants";
 
 import { TeamRecord } from "@/types/team";
 
@@ -84,7 +87,8 @@ export function TeamRecords({
       }
 
       const dimensionWinsKey = `${recordDimension}_wins` as keyof TeamRecord;
-      const dimensionLossesKey = `${recordDimension}_losses` as keyof TeamRecord;
+      const dimensionLossesKey =
+        `${recordDimension}_losses` as keyof TeamRecord;
       const dimensionPointDifferentialKey =
         `${recordDimension}_team_point_differential` as keyof TeamRecord;
       const dimensionPointsForKey =
@@ -96,8 +100,12 @@ export function TeamRecords({
       const bDimensionWins = Number(b[dimensionWinsKey]);
       const aDimensionLosses = Number(a[dimensionLossesKey]);
       const bDimensionLosses = Number(b[dimensionLossesKey]);
-      const aDimensionPointDifferential = Number(a[dimensionPointDifferentialKey]);
-      const bDimensionPointDifferential = Number(b[dimensionPointDifferentialKey]);
+      const aDimensionPointDifferential = Number(
+        a[dimensionPointDifferentialKey],
+      );
+      const bDimensionPointDifferential = Number(
+        b[dimensionPointDifferentialKey],
+      );
       const aDimensionPointsFor = Number(a[dimensionPointsForKey]);
       const bDimensionPointsFor = Number(b[dimensionPointsForKey]);
       const aDimensionPointsAgainst = Number(a[dimensionPointsAgainstKey]);
@@ -195,9 +203,8 @@ export function TeamRecords({
                     pointDifferential > 0 ? "+" : ""
                   }${pointDifferential}`;
                   const formattedPointsFor = numeral(pointsFor).format("0,0");
-                  const formattedPointsAgainst = numeral(pointsAgainst).format(
-                    "0,0",
-                  );
+                  const formattedPointsAgainst =
+                    numeral(pointsAgainst).format("0,0");
 
                   // Conditional logic to see if we should highlight a team's card.
                   const isSelected = selectedTeam === team.team;
@@ -229,7 +236,9 @@ export function TeamRecords({
                           </span>
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <span className={`font-semibold ${differentialClassName}`}>
+                              <span
+                                className={`font-semibold ${differentialClassName}`}
+                              >
                                 {formattedDifferential}
                               </span>
                             </TooltipTrigger>
@@ -238,7 +247,8 @@ export function TeamRecords({
                                 {scoreTypeLabel} For: {formattedPointsFor}
                               </p>
                               <p>
-                                {scoreTypeLabel} Against: {formattedPointsAgainst}
+                                {scoreTypeLabel} Against:{" "}
+                                {formattedPointsAgainst}
                               </p>
                             </TooltipContent>
                           </Tooltip>
