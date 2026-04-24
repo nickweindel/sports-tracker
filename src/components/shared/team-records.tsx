@@ -164,6 +164,7 @@ export function TeamRecords({
                   const ties = team[
                     `${recordDimension}_ties` as keyof TeamRecord
                   ] as number;
+                  const totalGames = wins + losses + ties;
                   const winningPercentage = team.winningPercentage;
                   const formattedWinningPercentage = numeral(
                     winningPercentage / 10,
@@ -205,6 +206,9 @@ export function TeamRecords({
                   const formattedPointsFor = numeral(pointsFor).format("0,0");
                   const formattedPointsAgainst =
                     numeral(pointsAgainst).format("0,0");
+                  const formattedPointsPerGame = numeral(pointsFor / totalGames).format("0,0.00");
+                  const formattedPointsAgainstPerGame = numeral(pointsAgainst / totalGames).format("0,0.00");
+                  const formattedPointDifferentialPerGame = numeral(pointDifferential / totalGames).format("0,0.00");
 
                   // Conditional logic to see if we should highlight a team's card.
                   const isSelected = selectedTeam === team.team;
@@ -213,9 +217,9 @@ export function TeamRecords({
                     <Card
                       key={team.team}
                       className={`
-                                                cursor-pointer transition-colors
-                                                ${isSelected ? "bg-primary/5" : "hover:bg-muted"}
-                                            `}
+                          cursor-pointer transition-colors
+                          ${isSelected ? "bg-primary/5" : "hover:bg-muted"}
+                      `}
                       onClick={() =>
                         onTeamSelect(isSelected ? undefined : team.team)
                       }
@@ -242,14 +246,34 @@ export function TeamRecords({
                                 {formattedDifferential}
                               </span>
                             </TooltipTrigger>
-                            <TooltipContent sideOffset={6}>
-                              <p>
-                                {scoreTypeLabel} For: {formattedPointsFor}
-                              </p>
-                              <p>
-                                {scoreTypeLabel} Against:{" "}
-                                {formattedPointsAgainst}
-                              </p>
+                            <TooltipContent
+                              sideOffset={6}
+                              className="min-w-[220px] space-y-1.5 px-3 py-2"
+                            >
+                              <div className="flex w-full items-baseline justify-between gap-6">
+                                <span className="shrink-0 text-left">
+                                  {scoreTypeLabel} For:
+                                </span>
+                                <span className="text-right tabular-nums whitespace-nowrap">
+                                  {`${formattedPointsFor} (${formattedPointsPerGame})`}
+                                </span>
+                              </div>
+                              <div className="flex w-full items-baseline justify-between gap-6">
+                                <span className="shrink-0 text-left">
+                                  {scoreTypeLabel} Against:
+                                </span>
+                                <span className="text-right tabular-nums whitespace-nowrap">
+                                  {`${formattedPointsAgainst} (${formattedPointsAgainstPerGame})`}
+                                </span>
+                              </div>
+                              <div className="flex w-full items-baseline justify-between gap-6">
+                                <span className="shrink-0 text-left">
+                                  {scoreTypeLabel} Differential:
+                                </span>
+                                <span className="text-right tabular-nums whitespace-nowrap">
+                                  {`${formattedDifferential} (${formattedPointDifferentialPerGame})`}
+                                </span>
+                              </div>
                             </TooltipContent>
                           </Tooltip>
                           <span className="font-bold">
