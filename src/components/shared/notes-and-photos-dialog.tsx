@@ -117,7 +117,7 @@ export const NotesAndPhotosDialog: React.FC<NotesAndPhotosDialogProps> = ({
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>
-            {game.away_team_name} @ {game.home_team_name}
+            {game.away_team_name} {game.neutral_site ? "vs" : "@"} {game.home_team_name}
           </DialogTitle>
           <DialogDescription>{game.game_date}</DialogDescription>
         </DialogHeader>
@@ -128,7 +128,7 @@ export const NotesAndPhotosDialog: React.FC<NotesAndPhotosDialogProps> = ({
             alt={game.away_team_name}
             className="w-16 h-16 object-contain"
           />
-          <span className="text-xl font-bold">@</span>
+          <span className="text-xl font-bold">{game.neutral_site ? "vs" : "@"}</span>
           <img
             src={game.home_team_logo}
             alt={game.home_team_name}
