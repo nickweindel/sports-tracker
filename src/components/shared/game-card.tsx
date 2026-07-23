@@ -112,7 +112,7 @@ export function GameCards({
               )}
             </CardTitle>
             <CardDescription>
-              {game.away_team} @ {game.home_team}
+              {game.away_team} {game.neutral_site ? "vs" : "@"} {game.home_team}
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-row justify-between items-center">

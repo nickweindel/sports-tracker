@@ -391,7 +391,7 @@ export default function PageClient({ user }: { user: any }) {
           )?.href;
 
         // Venue info.
-        const neutralSite = gameData.neutralSite;
+        const neutralSite = selectedLeague === "fifa.world" ? true : gameData.neutralSite;
         const venueData = gameData.venue;
         const venue = venueData.fullName;
 
