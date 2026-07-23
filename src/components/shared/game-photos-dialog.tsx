@@ -62,7 +62,7 @@ export function GamePhotosDialog({
               className="w-12 h-12 object-contain shrink-0"
             />
             <DialogTitle className="text-center">
-              {game.away_team_name} @ {game.home_team_name}
+              {game.away_team_name} {game.neutral_site ? "vs" : "@"} {game.home_team_name}
             </DialogTitle>
             <img
               src={game.home_team_logo}
