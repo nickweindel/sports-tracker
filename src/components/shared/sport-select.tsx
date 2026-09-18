@@ -1,3 +1,7 @@
+"use client";
+
+import { Info } from "lucide-react";
+
 import {
   Select,
   SelectContent,
@@ -7,10 +11,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface SportSelectProps {
   value?: string;
   onChange: (value: string) => void;
+}
+
+interface LeagueOption {
+  value: string;
+  label: string;
+  imageSrc: string;
+  note?: string;
 }
 
 export function SportSelect({ value, onChange }: SportSelectProps) {
@@ -19,11 +35,17 @@ export function SportSelect({ value, onChange }: SportSelectProps) {
   const soccerSubDirectory = "soccer";
   const ncaaPath = `/${publicSubDirectory}/ncaa.png`;
 
-  const leagues = [
+  const leagues: LeagueOption[] = [
     {
       value: "mlb",
       label: "MLB",
       imageSrc: `/${publicSubDirectory}/mlb.png`,
+    },
+    {
+      value: "college-baseball",
+      label: "College Baseball",
+      imageSrc: ncaaPath,
+      note: "Unreliable ranking information prior to 2022",
     },
     {
       value: "nhl",
@@ -129,7 +151,7 @@ export function SportSelect({ value, onChange }: SportSelectProps) {
       value: "womens-college-volleyball",
       label: "Women's College Volleyball",
       imageSrc: ncaaPath,
-    }
+    },
   ];
 
   return (
@@ -142,13 +164,33 @@ export function SportSelect({ value, onChange }: SportSelectProps) {
           <SelectLabel></SelectLabel>
           {leagues.map((league) => (
             <SelectItem key={league.value} value={league.value}>
-              <div style={{ display: "flex", alignItems: "center" }}>
+              <div className="flex items-center">
                 <img
                   src={league.imageSrc}
                   alt={`${league.label} logo`}
-                  style={{ width: 20, height: 20, marginRight: 8 }}
+                  className="mr-2 size-5"
                 />
                 {league.label}
+                {league.note && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span
+                        className="ml-1.5 inline-flex pointer-events-auto"
+                        onPointerDown={(event) => event.stopPropagation()}
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        <Info className="size-3.5 text-muted-foreground pointer-events-auto" />
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side="right"
+                      sideOffset={6}
+                      className="z-[200] max-w-56"
+                    >
+                      {league.note}
+                    </TooltipContent>
+                  </Tooltip>
+                )}
               </div>
             </SelectItem>
           ))}
