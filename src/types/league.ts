@@ -18,4 +18,6 @@ export type League =
   | "ita.1"
   | "mex.1"
   | "bra.1"
-  | "por.1";
+  | "por.1"
+  | "mens-college-volleyball"
+  | "womens-college-volleyball";

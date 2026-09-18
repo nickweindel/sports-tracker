@@ -40,6 +40,8 @@ export const LEAGUE_TO_SPORT_MAPPING: Record<League, Sport[keyof Sport]> = {
   "mex.1": "soccer",
   "bra.1": "soccer",
   "por.1": "soccer",
+  "mens-college-volleyball": "volleyball",
+  "womens-college-volleyball": "volleyball",
 };
 
 // League-to-venue mapping.
@@ -67,6 +69,8 @@ export const LEAGUE_TO_VENUE_TYPE_MAPPING: Record<
   "mex.1": "Stadiums",
   "bra.1": "Stadiums",
   "por.1": "Stadiums",
+  "mens-college-volleyball": "Arenas",
+  "womens-college-volleyball": "Arenas",
 };
 
 // Leagues where we should display ties.
@@ -117,4 +121,6 @@ export const LEAGUE_TO_SCORE_TYPE_MAPPING: Record<
   "mex.1": "goals",
   "bra.1": "goals",
   "por.1": "goals",
+  "mens-college-volleyball": "sets",
+  "womens-college-volleyball": "sets",
 };

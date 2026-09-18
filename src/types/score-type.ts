@@ -1,1 +1,1 @@
-export type ScoreType = "runs" | "goals" | "points";
+export type ScoreType = "runs" | "goals" | "points" | "sets";

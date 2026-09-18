@@ -120,6 +120,16 @@ export function SportSelect({ value, onChange }: SportSelectProps) {
       label: "MLS",
       imageSrc: `/${publicSubDirectory}/${soccerSubDirectory}/usa.png`,
     },
+    {
+      value: "mens-college-volleyball",
+      label: "Men's College Volleyball",
+      imageSrc: ncaaPath,
+    },
+    {
+      value: "womens-college-volleyball",
+      label: "Women's College Volleyball",
+      imageSrc: ncaaPath,
+    }
   ];
 
   return (

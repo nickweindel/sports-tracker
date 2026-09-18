@@ -3,4 +3,5 @@ export type Sport =
   | "basketball"
   | "hockey"
   | "baseball"
-  | "soccer";
+  | "soccer"
+  | "volleyball";
