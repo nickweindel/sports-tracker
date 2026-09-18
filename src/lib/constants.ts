@@ -43,6 +43,8 @@ export const LEAGUE_TO_SPORT_MAPPING: Record<League, Sport[keyof Sport]> = {
   "mens-college-volleyball": "volleyball",
   "womens-college-volleyball": "volleyball",
   "college-baseball": "baseball",
+  "mens-college-hockey": "hockey",
+  "womens-college-hockey": "hockey",
 };
 
 // League-to-venue mapping.
@@ -73,6 +75,8 @@ export const LEAGUE_TO_VENUE_TYPE_MAPPING: Record<
   "mens-college-volleyball": "Arenas",
   "womens-college-volleyball": "Arenas",
   "college-baseball": "Stadiums",
+  "mens-college-hockey": "Arenas",
+  "womens-college-hockey": "Arenas",
 };
 
 // Leagues where we should display ties.
@@ -129,4 +133,6 @@ export const LEAGUE_TO_SCORE_TYPE_MAPPING: Record<
   "mens-college-volleyball": "sets",
   "womens-college-volleyball": "sets",
   "college-baseball": "runs",
+  "mens-college-hockey": "goals",
+  "womens-college-hockey": "goals",
 };

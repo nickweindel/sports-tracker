@@ -21,4 +21,6 @@ export type League =
   | "por.1"
   | "mens-college-volleyball"
   | "womens-college-volleyball"
-  | "college-baseball";
+  | "college-baseball"
+  | "mens-college-hockey"
+  | "womens-college-hockey";

@@ -52,6 +52,16 @@ export function SportSelect({ value, onChange }: SportSelectProps) {
       label: "NHL",
       imageSrc: `/${publicSubDirectory}/nhl.png`,
     },
+    //{
+    //  value: "mens-college-hockey",
+    //  label: "Men's College Hockey",
+    //  imageSrc: ncaaPath
+    //},
+    //{
+    //  value: "womens-college-hockey",
+    //  label: "Women's College Hockey",
+    //  imageSrc: ncaaPath,
+    //},
     {
       value: "nfl",
       label: "NFL",
