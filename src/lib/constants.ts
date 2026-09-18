@@ -8,6 +8,16 @@ export const API_BASE: string = "https://site.api.espn.com/apis/site/v2/sports";
 export const API_PATH: string = "scoreboard";
 export const FULL_GAME_SEARCH_PARAMETERS: string = "&groups=50&limit=500";
 
+// Leagues that we need to extend the search parameters so we get all of our options.
+export const LEAGUES_TO_EXTEND_SEARCH_PARAMETERS: League[] = [
+  "mens-college-basketball",
+  "womens-college-basketball",
+];
+
+export const isExtendedSearchParametersNeeded = (league: League) => {
+  return LEAGUES_TO_EXTEND_SEARCH_PARAMETERS.includes(league);
+};
+
 // League-to-sport mapping.
 export const LEAGUE_TO_SPORT_MAPPING: Record<League, Sport[keyof Sport]> = {
   "college-football": "football",
