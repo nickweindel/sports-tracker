@@ -6,6 +6,7 @@ import { VenueType } from "@/types/venue-type";
 // API constants.
 export const API_BASE: string = "https://site.api.espn.com/apis/site/v2/sports";
 export const API_PATH: string = "scoreboard";
+export const FULL_GAME_SEARCH_PARAMETERS: string = "&groups=50&limit=500";
 
 // League-to-sport mapping.
 export const LEAGUE_TO_SPORT_MAPPING: Record<League, Sport[keyof Sport]> = {
