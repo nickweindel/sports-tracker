@@ -18,7 +18,7 @@ export interface Game {
   arena_city: string;
   arena_state: string;
   arena_country: string;
-  neutral_site: string;
+  neutral_site: boolean;
   notes: string | null;
 }
 

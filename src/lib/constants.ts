@@ -6,6 +6,17 @@ import { VenueType } from "@/types/venue-type";
 // API constants.
 export const API_BASE: string = "https://site.api.espn.com/apis/site/v2/sports";
 export const API_PATH: string = "scoreboard";
+export const FULL_GAME_SEARCH_PARAMETERS: string = "&groups=50&limit=500";
+
+// Leagues that we need to extend the search parameters so we get all of our options.
+export const LEAGUES_TO_EXTEND_SEARCH_PARAMETERS: League[] = [
+  "mens-college-basketball",
+  "womens-college-basketball",
+];
+
+export const isExtendedSearchParametersNeeded = (league: League) => {
+  return LEAGUES_TO_EXTEND_SEARCH_PARAMETERS.includes(league);
+};
 
 // League-to-sport mapping.
 export const LEAGUE_TO_SPORT_MAPPING: Record<League, Sport[keyof Sport]> = {
@@ -29,6 +40,11 @@ export const LEAGUE_TO_SPORT_MAPPING: Record<League, Sport[keyof Sport]> = {
   "mex.1": "soccer",
   "bra.1": "soccer",
   "por.1": "soccer",
+  "mens-college-volleyball": "volleyball",
+  "womens-college-volleyball": "volleyball",
+  "college-baseball": "baseball",
+  "mens-college-hockey": "hockey",
+  "womens-college-hockey": "hockey",
 };
 
 // League-to-venue mapping.
@@ -56,6 +72,11 @@ export const LEAGUE_TO_VENUE_TYPE_MAPPING: Record<
   "mex.1": "Stadiums",
   "bra.1": "Stadiums",
   "por.1": "Stadiums",
+  "mens-college-volleyball": "Arenas",
+  "womens-college-volleyball": "Arenas",
+  "college-baseball": "Stadiums",
+  "mens-college-hockey": "Arenas",
+  "womens-college-hockey": "Arenas",
 };
 
 // Leagues where we should display ties.
@@ -79,6 +100,9 @@ export const LEAGUE_TIES_ALLOWED: { [key: string]: boolean } = {
   "mex.1": true,
   "bra.1": true,
   "por.1": true,
+  "mens-college-volleyball": false,
+  "womens-college-volleyball": false,
+  "college-baseball": false,
 };
 
 // League-to-score-type mapping.
@@ -106,4 +130,9 @@ export const LEAGUE_TO_SCORE_TYPE_MAPPING: Record<
   "mex.1": "goals",
   "bra.1": "goals",
   "por.1": "goals",
+  "mens-college-volleyball": "sets",
+  "womens-college-volleyball": "sets",
+  "college-baseball": "runs",
+  "mens-college-hockey": "goals",
+  "womens-college-hockey": "goals",
 };

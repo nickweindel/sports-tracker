@@ -391,14 +391,62 @@ export default function PageClient({ user }: { user: any }) {
           )?.href;
 
         // Venue info.
-        const neutralSite = selectedLeague === "fifa.world" ? true : gameData.neutralSite;
-        const venueData = gameData.venue;
-        const venue = venueData.fullName;
+        // Requires specific handling for college baseball / College World Series
+        const gameYear = parseInt(formattedDate?.substring(0, 4) || "0", 10);
+        const event = filteredGame[0];
+        const eventNotes = (event as { notes?: unknown }).notes;
+        const competitionNotes = (gameData as { notes?: unknown }).notes;
+        const rawEspnNotes = [
+          ...(Array.isArray(eventNotes)
+            ? eventNotes
+            : eventNotes
+              ? [eventNotes]
+              : []),
+          ...(Array.isArray(competitionNotes)
+            ? competitionNotes
+            : competitionNotes
+              ? [competitionNotes]
+              : []),
+        ];
+        const hasWorldSeriesHeadline = rawEspnNotes.some((note) => {
+          if (!note || typeof note !== "object" || !("headline" in note)) {
+            return false;
+          }
+          const headline = (note as { headline: unknown }).headline;
+          return (
+            typeof headline === "string" &&
+            headline.toLowerCase().includes("world series")
+          );
+        });
+        const isCollegeWorldSeries =
+          selectedLeague === "college-baseball" &&
+          (event.season?.slug === "world-series" || hasWorldSeriesHeadline);
+        let neutralSite: boolean;
+        let venue: string;
+        let venueCity: string | undefined;
+        let venueState: string | undefined;
+        let venueCountry: string | undefined;
 
-        const venueLocation = venueData.address;
-        const venueCity = venueLocation.city;
-        const venueState = venueLocation.state;
-        const venueCountry = venueLocation.country;
+        if (isCollegeWorldSeries) {
+          neutralSite = true;
+          venueCity = "Omaha";
+          venueState = "Nebraska";
+          venueCountry = "USA";
+          venue =
+            gameYear >= 2011
+              ? "Charles Schwab Field"
+              : "Johnny Rosenblatt Stadium";
+        } else {
+          neutralSite =
+            selectedLeague === "fifa.world" ? true : gameData.neutralSite;
+          const venueData = gameData.venue;
+          venue = venueData.fullName;
+
+          const venueLocation = venueData.address;
+          venueCity = venueLocation.city;
+          venueState = venueLocation.state;
+          venueCountry = venueLocation.country;
+        }
 
         if (formattedDate && inputHomeTeam && inputAwayTeam) {
           const gameToLoad: Game = {
@@ -418,10 +466,10 @@ export default function PageClient({ user }: { user: any }) {
             away_team_rank: awayTeamRank,
             game_center_link: recapLink,
             arena: venue,
-            arena_city: venueCity,
-            arena_state: venueState,
-            arena_country: venueCountry,
-            neutral_site: neutralSite,
+            arena_city: venueCity ?? "",
+            arena_state: venueState ?? "",
+            arena_country: venueCountry ?? "",
+            neutral_site: Boolean(neutralSite),
             notes: notes,
           };
 

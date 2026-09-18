@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { API_BASE, API_PATH } from "@/lib/constants";
+import {
+  API_BASE,
+  API_PATH,
+  FULL_GAME_SEARCH_PARAMETERS,
+  isExtendedSearchParametersNeeded,
+} from "@/lib/constants";
+import { League } from "@/types/league";
 
 export async function GET(request: NextRequest) {
   const { searchParams, pathname } = new URL(request.url);
@@ -18,8 +24,11 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    const collegeParams = isExtendedSearchParametersNeeded(league as League)
+      ? FULL_GAME_SEARCH_PARAMETERS
+      : "";
     const response = await fetch(
-      `${API_BASE}/${sport}/${league}/${API_PATH}?dates=${date}`,
+      `${API_BASE}/${sport}/${league}/${API_PATH}?dates=${date}${collegeParams}`,
     );
 
     if (!response.ok) {
