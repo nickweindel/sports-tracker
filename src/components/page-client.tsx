@@ -408,19 +408,32 @@ export default function PageClient({ user }: { user: any }) {
               ? [competitionNotes]
               : []),
         ];
-        const hasWorldSeriesHeadline = rawEspnNotes.some((note) => {
+        const eventNoteHeadlines = rawEspnNotes.flatMap((note) => {
           if (!note || typeof note !== "object" || !("headline" in note)) {
-            return false;
+            return [];
           }
           const headline = (note as { headline: unknown }).headline;
-          return (
-            typeof headline === "string" &&
-            headline.toLowerCase().includes("world series")
-          );
+          return typeof headline === "string" ? [headline] : [];
         });
+        const hasWorldSeriesHeadline = eventNoteHeadlines.some((headline) =>
+          headline.toLowerCase().includes("world series"),
+        );
         const isCollegeWorldSeries =
           selectedLeague === "college-baseball" &&
           (event.season?.slug === "world-series" || hasWorldSeriesHeadline);
+        const womensVolleyballChampionshipLabels = new Set([
+          "ncaa women's volleyball championship",
+          "ncaa women's volleyball championship - semifinal",
+        ]);
+        const isWomensVolleyballChampionship =
+          selectedLeague === "womens-college-volleyball" &&
+          [event.name, event.shortName, ...eventNoteHeadlines].some(
+            (text) =>
+              typeof text === "string" &&
+              womensVolleyballChampionshipLabels.has(
+                text.replace(/\s+/g, " ").trim().toLowerCase(),
+              ),
+          );
         let neutralSite: boolean;
         let venue: string;
         let venueCity: string | undefined;
@@ -438,7 +451,9 @@ export default function PageClient({ user }: { user: any }) {
               : "Johnny Rosenblatt Stadium";
         } else {
           neutralSite =
-            selectedLeague === "fifa.world" ? true : gameData.neutralSite;
+            selectedLeague === "fifa.world" || isWomensVolleyballChampionship
+              ? true
+              : Boolean(gameData.neutralSite);
           const venueData = gameData.venue;
           venue = venueData.fullName;
 
