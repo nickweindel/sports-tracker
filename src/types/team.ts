@@ -26,6 +26,10 @@ export interface TeamRecord {
   overall_wins: number;
   overall_losses: number;
   overall_ties: number;
+  home_streak: string;
+  away_streak: string;
+  neutral_streak: string;
+  overall_streak: string;
 }
 
 export interface TeamType {
