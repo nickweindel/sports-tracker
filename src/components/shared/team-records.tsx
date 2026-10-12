@@ -38,6 +38,9 @@ export function TeamRecords({
   onTeamSelect,
 }: TeamRecordProps) {
   const logoDimensions = 24;
+  const positiveColor = "text-green-600";
+  const negativeColor = "text-red-600";
+  const neutralColor = "text-muted-foreground";
 
   const [recordDimension, setRecordDimension] = useState<string>("overall");
 
@@ -192,10 +195,18 @@ export function TeamRecords({
                   );
                   const differentialClassName =
                     pointDifferential > 0
-                      ? "text-green-600"
+                      ? positiveColor
                       : pointDifferential < 0
-                        ? "text-red-600"
-                        : "text-muted-foreground";
+                        ? negativeColor
+                        : neutralColor;
+                const streak = String(
+                  team[`${recordDimension}_streak` as keyof TeamRecord],
+                );
+                const streakClassName = streak.startsWith("W")
+                  ? positiveColor
+                  : streak.startsWith("L")
+                    ? negativeColor
+                    : neutralColor;
                   const scoreTypeText = String(scoreType);
                   const scoreTypeLabel =
                     scoreTypeText.charAt(0).toUpperCase() +
@@ -231,12 +242,17 @@ export function TeamRecords({
                             width={logoDimensions}
                             height={logoDimensions}
                           />
-                          <span className="font-medium">{team.team}</span>
+                          <div className="flex flex-col">
+                            <span className="font-medium">{team.team}</span>
+                            <span className="text-xs text-muted-foreground">
+                              {Number(wins)}W - {Number(losses)}L
+                              {isTiesAllowed && ` - ${Number(ties)}T`}
+                            </span>
+                          </div>
                         </div>
                         <div className="flex items-center gap-4 text-sm">
-                          <span>
-                            {Number(wins)}W - {Number(losses)}L
-                            {isTiesAllowed && ` - ${Number(ties)}T`}
+                          <span className={`font-semibold ${streakClassName}`}>
+                            {streak}
                           </span>
                           <Tooltip>
                             <TooltipTrigger asChild>
